@@ -24,12 +24,12 @@ export default function App() {
           <Route path="/requests" element={<MyRequests />} />
           <Route path="/requests/:id" element={<RequestDetail />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/history" element={<DonationHistory />} />
         </Route>
 
         <Route element={<MainLayout focus />}>
           <Route path="/donate" element={<AddDonation />} />
           <Route path="/donation/:id" element={<DonationDetail />} />
-          <Route path="/history" element={<DonationHistory />} />
         </Route>
 
         <Route path="*" element={<Navigate to="/" replace />} />

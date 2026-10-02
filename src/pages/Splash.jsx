@@ -1,40 +1,75 @@
+
 import { useNavigate } from "react-router-dom"
 import { motion } from "motion/react"
-import { Leaf, HeartHandshake } from "lucide-react"
+import { HeartHandshake } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
 export default function Splash() {
   const navigate = useNavigate()
+
   return (
-    <div className="relative flex min-h-dvh flex-col items-center justify-center overflow-hidden px-8 text-center">
-      <div className="absolute -top-24 -right-24 size-72 rounded-full bg-sage/20 md:size-96" />
-      <div className="absolute -bottom-20 -left-20 size-64 rounded-full bg-clay/15 md:size-80" />
+    <main className="relative flex min-h-dvh flex-col items-center justify-center overflow-hidden bg-[#F5F1E7] px-5 py-8 text-center">
 
-      <motion.div
-        initial={{ opacity: 0, scale: 0.9 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.6 }}
-        className="relative flex flex-col items-center"
-      >
-        <div className="flex size-24 items-center justify-center rounded-[2rem] bg-primary text-primary-foreground shadow-lg md:size-28">
-          <Leaf className="size-12 md:size-14" />
-        </div>
-        <h1 className="mt-6 text-4xl font-extrabold tracking-tight text-primary md:text-6xl">AnnaDaan</h1>
-        <p className="mt-3 max-w-xs text-muted-foreground md:max-w-md md:text-lg">
-          Share a meal. Reduce waste. Feed a neighbour.
-        </p>
-      </motion.div>
+      {/* Background decorations */}
+      <div className="pointer-events-none absolute -left-24 top-20 size-72 rounded-full bg-[#DDE4D4]/60 blur-3xl" />
+      <div className="pointer-events-none absolute -right-24 bottom-0 size-80 rounded-full bg-[#EAD5C3]/50 blur-3xl" />
 
-      <motion.div
-        initial={{ opacity: 0, y: 16 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.5 }}
-        className="relative mt-12 w-full max-w-xs"
-      >
-        <Button size="lg" className="w-full" onClick={() => navigate("/login")}>
-          <HeartHandshake /> Get Started
-        </Button>
-      </motion.div>
-    </div>
+      <div className="relative z-10 flex w-full max-w-lg flex-col items-center">
+
+        {/* AnnaDaan Logo */}
+        <motion.div
+          initial={{ opacity: 0, y: -15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="flex flex-col items-center"
+        >
+          <img
+            src="/images/annadaan%20logo.png"
+            alt="AnnaDaan leaf logo"
+            className="h-20 w-20 object-contain sm:h-24 sm:w-24"
+          />
+
+          <h1 className="mt-3 font-serif text-4xl font-bold tracking-tight text-[#344B36] sm:text-5xl md:text-6xl">
+            AnnaDaan
+          </h1>
+
+          <p className="mt-3 max-w-sm text-sm leading-6 text-[#77796C] sm:text-base">
+            Share a meal. Reduce waste. Feed a neighbour.
+          </p>
+        </motion.div>
+
+        {/* Food Illustration */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.92, y: 12 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          transition={{ duration: 0.75, delay: 0.15 }}
+          className="my-3 flex w-full justify-center sm:my-5"
+        >
+          <img
+            src="/images/annadaan-food.png"
+            alt="A bowl of food being shared"
+            className="h-auto w-full max-w-[350px] object-contain sm:max-w-[410px]"
+          />
+        </motion.div>
+
+        {/* Get Started */}
+        <motion.div
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.55, delay: 0.35 }}
+          className="w-full max-w-xs"
+        >
+          <Button
+            size="lg"
+            onClick={() => navigate("/login")}
+            className="h-14 w-full rounded-full bg-[#526C53] text-base font-semibold text-white shadow-lg shadow-[#526C53]/20 transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#405841] hover:shadow-xl"
+          >
+            <HeartHandshake className="mr-2 size-5" />
+            Get Started
+          </Button>
+        </motion.div>
+
+      </div>
+    </main>
   )
 }
