@@ -1,4 +1,4 @@
-
+import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -9,18 +9,58 @@ import {
   TabsTrigger,
   TabsContent,
 } from "@/components/ui/tabs"
+import {
+  signInWithGoogle,
+  signInWithEmail,
+  signUpWithEmail,
+  friendlyAuthError,
+} from "@/lib/auth"
+
+function ErrorMessage({ message }) {
+  if (!message) return null
+  return (
+    <p
+      role="alert"
+      className="rounded-xl bg-destructive/10 px-4 py-3 text-sm text-destructive"
+    >
+      {message}
+    </p>
+  )
+}
 
 function AuthForm({ mode }) {
   const navigate = useNavigate()
+  const [busy, setBusy] = useState(false)
+  const [error, setError] = useState("")
 
-  const submit = (e) => {
+  const submit = async (e) => {
     e.preventDefault()
-    // TODO Step 4: Firebase email/password auth
-    navigate("/home")
+    const form = e.currentTarget
+    const email = form.elements[`email-${mode}`].value.trim()
+    const password = form.elements[`pw-${mode}`].value
+    const name = mode === "signup" ? form.elements["name"].value.trim() : ""
+
+    setBusy(true)
+    setError("")
+
+    try {
+      if (mode === "signup") {
+        await signUpWithEmail(name, email, password)
+      } else {
+        await signInWithEmail(email, password)
+      }
+      navigate("/home")
+    } catch (err) {
+      setError(friendlyAuthError(err))
+    } finally {
+      setBusy(false)
+    }
   }
 
   return (
     <form onSubmit={submit} className="space-y-5 pt-6">
+      <ErrorMessage message={error} />
+
       {mode === "signup" && (
         <div className="space-y-2">
           <Label htmlFor="name" className="font-medium text-[#405441]">
@@ -57,6 +97,7 @@ function AuthForm({ mode }) {
           type="password"
           placeholder="••••••••"
           required
+          minLength={6}
           className="h-13 rounded-xl border-[#D9DCCF] bg-[#FCFBF7] px-4 text-[#344B36] placeholder:text-[#A1A294] focus-visible:ring-[#526C53]"
         />
       </div>
@@ -64,9 +105,14 @@ function AuthForm({ mode }) {
       <Button
         type="submit"
         size="lg"
+        disabled={busy}
         className="mt-3 h-13 w-full rounded-xl bg-[#526C53] text-base font-semibold text-white shadow-lg shadow-[#526C53]/15 transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#405841] hover:shadow-xl"
       >
-        {mode === "signup" ? "Create account" : "Log in"}
+        {busy
+          ? "Please wait…"
+          : mode === "signup"
+            ? "Create account"
+            : "Log in"}
       </Button>
     </form>
   )
@@ -74,6 +120,24 @@ function AuthForm({ mode }) {
 
 export default function Login() {
   const navigate = useNavigate()
+  const [googleBusy, setGoogleBusy] = useState(false)
+  const [googleError, setGoogleError] = useState("")
+
+  const handleGoogle = async () => {
+    setGoogleBusy(true)
+    setGoogleError("")
+
+    try {
+      const cred = await signInWithGoogle()
+      console.log("Signed in with Google:", cred.user.uid, cred.user.email)
+      navigate("/home")
+    } catch (err) {
+      console.error("Google sign-in failed:", err)
+      setGoogleError(friendlyAuthError(err))
+    } finally {
+      setGoogleBusy(false)
+    }
+  }
 
   return (
     <main className="min-h-dvh bg-[#F5F1E7] md:grid md:grid-cols-[0.95fr_1.05fr]">
@@ -196,17 +260,22 @@ export default function Login() {
           </div>
 
           {/* Google button */}
-          <Button
-            variant="outline"
-            size="lg"
-            className="h-13 w-full rounded-xl border-[#D9DCCF] bg-[#FCFBF7] font-medium text-[#405441] shadow-sm transition-all hover:bg-[#EDEFE5] hover:text-[#344B36]"
-            onClick={() => navigate("/home")}
-          >
-            <span className="flex size-6 items-center justify-center rounded-full bg-[#B87858] text-xs font-bold text-white">
-              G
-            </span>
-            Continue with Google
-          </Button>
+          <div className="space-y-3">
+            <ErrorMessage message={googleError} />
+
+            <Button
+              variant="outline"
+              size="lg"
+              disabled={googleBusy}
+              className="h-13 w-full rounded-xl border-[#D9DCCF] bg-[#FCFBF7] font-medium text-[#405441] shadow-sm transition-all hover:bg-[#EDEFE5] hover:text-[#344B36]"
+              onClick={handleGoogle}
+            >
+              <span className="flex size-6 items-center justify-center rounded-full bg-[#B87858] text-xs font-bold text-white">
+                G
+              </span>
+              {googleBusy ? "Signing in…" : "Continue with Google"}
+            </Button>
+          </div>
 
         </div>
       </section>

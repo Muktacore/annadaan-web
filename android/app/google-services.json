@@ -12,7 +12,20 @@
           "package_name": "com.annadaan.app"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "1065774553216-kqcjg4k05uqb6lvqqal6a99r80lqr899.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.annadaan.app",
+            "certificate_hash": "b4ed3e4a7e060aab3aae3828016f13d031717cf8"
+          }
+        },
+        {
+          "client_id": "1065774553216-c7lp58kos9n18jn352nt5ms1jua0l6na.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyApV2RTCH4u6XVO1ZgkAtw7padqSFBmrfo"
@@ -20,7 +33,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1065774553216-c7lp58kos9n18jn352nt5ms1jua0l6na.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }
