@@ -1,11 +1,12 @@
-﻿
+
 import { useRef, useState } from "react"
-import { useNavigate } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import {
   UserRound,
   Mail,
   MapPin,
   Settings2,
+  History,
   Pencil,
   Camera,
   HeartHandshake,
@@ -25,6 +26,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { cn } from "@/lib/utils"
+import { currentUser, donatedHistory } from "@/lib/mockData"
 
 export default function Profile() {
   const navigate = useNavigate()
@@ -34,8 +36,8 @@ export default function Profile() {
   const [avatar, setAvatar] = useState(null)
 
   const [profile, setProfile] = useState({
-    name: "",
-    email: "",
+    name: currentUser.name,
+    email: currentUser.email,
     location: "",
     bio: "A little kindness goes a long way.",
   })
@@ -76,6 +78,11 @@ export default function Profile() {
 
   const displayName = savedProfile.name.trim() || "Food Friend"
 
+  const mealsShared = donatedHistory.reduce(
+    (sum, h) => sum + (h.status === "claimed" ? h.quantity : 0),
+    0
+  )
+
   const settings = [
     {
       icon: Bell,
@@ -101,7 +108,7 @@ export default function Profile() {
   ]
 
   return (
-    <main className="min-h-dvh bg-[#F7F3E9] px-4 py-6 text-[#2B2A24] transition-colors duration-300 dark:bg-background dark:text-foreground sm:px-6 lg:px-10 lg:py-9">
+    <div className="px-5 pt-8 pb-8 text-foreground md:px-0 md:pt-10">
 
       <div className="mx-auto w-full max-w-6xl space-y-7">
 
@@ -112,7 +119,7 @@ export default function Profile() {
               Your little corner
             </p>
 
-            <h1 className="mt-1 font-serif text-3xl font-bold text-[#344B36] dark:text-foreground sm:text-4xl">
+            <h1 className="mt-1 text-3xl font-bold text-[#344B36] dark:text-foreground sm:text-4xl">
               My Profile
             </h1>
           </div>
@@ -150,7 +157,7 @@ export default function Profile() {
                     />
                   ) : (
                     <img
-                      src="/images/annadaan%20logo.png"
+                      src="/images/annadaan-logo.png"
                       alt="AnnaDaan default profile"
                       className="size-full object-contain p-2"
                     />
@@ -185,7 +192,7 @@ export default function Profile() {
                   COMMUNITY MEMBER
                 </span>
 
-                <h2 className="mt-3 break-words font-serif text-2xl font-bold sm:text-3xl">
+                <h2 className="mt-3 break-words text-2xl font-bold sm:text-3xl">
                   Hello, {displayName}!
                 </h2>
 
@@ -211,7 +218,7 @@ export default function Profile() {
               </div>
 
               <div>
-                <p className="font-serif text-lg font-semibold text-[#FFF7E9]">
+                <p className="text-lg font-semibold text-[#FFF7E9]">
                   Every meal matters.
                 </p>
 
@@ -235,8 +242,8 @@ export default function Profile() {
               <HandHeart size={22} />
             </div>
 
-            <p className="mt-5 font-serif text-3xl font-bold text-[#315D45] dark:text-[#B7D9B3]">
-              0
+            <p className="mt-5 text-3xl font-bold text-[#315D45] dark:text-[#B7D9B3]">
+              {donatedHistory.length}
             </p>
 
             <p className="mt-1 text-sm text-[#617D62] dark:text-[#A6C0A3]">
@@ -253,8 +260,8 @@ export default function Profile() {
               <Utensils size={22} />
             </div>
 
-            <p className="mt-5 font-serif text-3xl font-bold text-[#704A32] dark:text-[#F0C5A2]">
-              0
+            <p className="mt-5 text-3xl font-bold text-[#704A32] dark:text-[#F0C5A2]">
+              {mealsShared}
             </p>
 
             <p className="mt-1 text-sm text-[#87684F] dark:text-[#C9AD96]">
@@ -272,7 +279,7 @@ export default function Profile() {
               <Sparkles size={22} />
           </div>
 
-            <p className="mt-4 font-serif text-xl font-bold text-[#705622] dark:text-[#F1D99A] sm:text-2xl">
+            <p className="mt-4 text-xl font-bold text-[#705622] dark:text-[#F1D99A] sm:text-2xl">
               Start your journey
             </p>
 
@@ -297,7 +304,7 @@ export default function Profile() {
                   Your details
                 </p>
 
-                <h3 className="mt-1 font-serif text-xl font-bold text-[#344B36] dark:text-foreground sm:text-2xl">
+                <h3 className="mt-1 text-xl font-bold text-[#344B36] dark:text-foreground sm:text-2xl">
                   Personal Information
                 </h3>
               </div>
@@ -443,12 +450,30 @@ export default function Profile() {
               Your account
             </p>
 
-            <h3 className="mt-1 font-serif text-2xl font-bold text-[#344B36] dark:text-foreground">
+            <h3 className="mt-1 text-2xl font-bold text-[#344B36] dark:text-foreground">
               Preferences
             </h3>
 
             <div className="mt-6 space-y-2">
-              {settings.map((item) => {
+              <Link
+              to="/history"
+              className="flex min-w-0 items-center gap-3 rounded-2xl p-3 transition-colors hover:bg-[#F7F5ED] dark:hover:bg-accent"
+            >
+              <div className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-[#E3E9D9] text-[#526C53] dark:bg-[#293D30] dark:text-[#A7C6A5]">
+                <History size={20} />
+              </div>
+
+              <div className="min-w-0 flex-1">
+                <p className="text-sm font-semibold">Donation history</p>
+                <p className="mt-0.5 text-xs text-muted-foreground">
+                  Food you've shared and received
+                </p>
+              </div>
+
+              <ChevronRight size={18} className="shrink-0 text-muted-foreground" />
+            </Link>
+
+            {settings.map((item) => {
                 const Icon = item.icon
 
                 return (
@@ -507,6 +532,6 @@ export default function Profile() {
         </footer>
 
       </div>
-    </main>
+    </div>
   )
 }

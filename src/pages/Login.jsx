@@ -90,13 +90,13 @@ export default function Login() {
           {/* Original colored logo */}
           <div className="flex size-24 items-center justify-center rounded-[2rem] bg-[#F5F1E7] shadow-xl shadow-black/10">
             <img
-              src="/images/annadaan%20logo.png"
+              src="/images/annadaan-logo.png"
               alt="AnnaDaan leaf logo"
               className="size-[76px] object-contain"
             />
           </div>
 
-          <h2 className="mt-7 font-serif text-5xl font-bold tracking-tight text-[#FFF9ED]">
+          <h2 className="mt-7 text-5xl font-bold tracking-tight text-[#FFF9ED]">
             AnnaDaan
           </h2>
 
@@ -133,12 +133,12 @@ export default function Login() {
           {/* Mobile logo */}
           <div className="mb-8 flex flex-col items-center text-center md:hidden">
             <img
-              src="/images/annadaan%20logo.png"
+              src="/images/annadaan-logo.png"
               alt="AnnaDaan leaf logo"
               className="size-[76px] object-contain"
             />
 
-            <h2 className="mt-2 font-serif text-3xl font-bold text-[#344B36]">
+            <h2 className="mt-2 text-3xl font-bold text-[#344B36]">
               AnnaDaan
             </h2>
           </div>
@@ -149,7 +149,7 @@ export default function Login() {
               Welcome
             </p>
 
-            <h1 className="font-serif text-3xl font-bold leading-tight tracking-tight text-[#344B36] sm:text-4xl">
+            <h1 className="text-3xl font-bold leading-tight tracking-tight text-[#344B36] sm:text-4xl">
               Welcome to
               <br />
               AnnaDaan

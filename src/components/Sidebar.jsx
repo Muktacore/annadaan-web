@@ -16,7 +16,7 @@ export default function Sidebar() {
     <aside className="sticky top-0 hidden h-dvh w-64 shrink-0 flex-col border-r bg-card p-5 md:flex">
       <Link to="/home" className="flex items-center gap-3 px-2 py-2">
         <img
-          src="/images/annadaan logo.png"
+          src="/images/annadaan-logo.png"
           alt="AnnaDaan logo"
           className="size-12 shrink-0 object-contain"
         />

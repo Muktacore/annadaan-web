@@ -151,6 +151,16 @@
   --status-unsafe-soft: #3B1F1C;
 }
 
+.leaflet-container .leaflet-popup-content-wrapper,
+.leaflet-container .leaflet-popup-tip {
+  background: var(--card);
+  color: var(--card-foreground);
+}
+
+.leaflet-container .leaflet-popup-content a {
+  color: var(--primary);
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;

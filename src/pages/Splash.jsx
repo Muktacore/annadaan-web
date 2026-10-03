@@ -24,12 +24,12 @@ export default function Splash() {
           className="flex flex-col items-center"
         >
           <img
-            src="/images/annadaan%20logo.png"
+            src="/images/annadaan-logo.png"
             alt="AnnaDaan leaf logo"
             className="h-20 w-20 object-contain sm:h-24 sm:w-24"
           />
 
-          <h1 className="mt-3 font-serif text-4xl font-bold tracking-tight text-[#344B36] sm:text-5xl md:text-6xl">
+          <h1 className="mt-3 text-4xl font-bold tracking-tight text-[#344B36] sm:text-5xl md:text-6xl">
             AnnaDaan
           </h1>
 

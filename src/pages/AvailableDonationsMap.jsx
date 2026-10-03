@@ -1,4 +1,4 @@
-﻿
+
 import { useEffect, useMemo } from "react"
 import { Link } from "react-router-dom"
 import {
@@ -118,7 +118,7 @@ export default function AvailableDonationsMap() {
 
           <div className="flex items-center justify-between gap-3">
             <div>
-              <h2 className="font-serif text-xl font-bold">
+              <h2 className="text-xl font-bold">
                 Available food
               </h2>
 

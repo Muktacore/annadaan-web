@@ -1,4 +1,4 @@
-﻿
+
 import { Link, useParams } from "react-router-dom"
 import {
   ChevronRight,
@@ -40,11 +40,11 @@ const CLAIM_LABELS = {
 
 const CLAIM_BADGE = {
   Pending:
-    "bg-[#F5E7C4] text-[#89651E] dark:bg-[#493B25] dark:text-[#E8C96B]",
+    "bg-muted text-muted-foreground",
   RequestAccepted:
-    "bg-[#F4DFD3] text-[#A65F45] dark:bg-[#482F29] dark:text-[#E5A58A]",
+    "bg-sage/30 text-foreground",
   Claimed:
-    "bg-[#DDEBD7] text-[#347044] dark:bg-[#253D2D] dark:text-[#A4D3A9]",
+    "bg-primary text-primary-foreground",
 }
 
 function RequestRow({ request }) {
@@ -122,7 +122,7 @@ function EmptyState({ label, history = false }) {
       </div>
 
       <div className="relative">
-        <p className="font-serif text-xl font-bold text-[#465640] dark:text-[#E8E9D9]">
+        <p className="text-xl font-bold text-[#465640] dark:text-[#E8E9D9]">
           Nothing here yet
         </p>
 
@@ -203,7 +203,7 @@ export default function MyRequests() {
           </div>
 
           <div>
-            <h2 className="font-serif text-lg font-bold">
+            <h2 className="text-lg font-bold">
               Your requests
             </h2>
             <p className="text-xs text-muted-foreground">
@@ -351,7 +351,7 @@ export function RequestDetail() {
               Your food journey
             </p>
 
-            <h3 className="mt-1 font-serif text-xl font-bold">
+            <h3 className="mt-1 text-xl font-bold">
               Request status
             </h3>
           </div>

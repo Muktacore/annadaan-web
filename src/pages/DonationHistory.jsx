@@ -1,4 +1,4 @@
-﻿
+import PageHeader from "@/components/PageHeader"
 import { useMemo } from "react"
 import {
   ArrowDownLeft,
@@ -29,7 +29,7 @@ function HistoryRow({ item, type }) {
       className={cn(
         "flex items-center gap-3 rounded-3xl border bg-card p-4 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md",
         isExpired
-          ? "border-[#E8C7B9] hover:border-[#C98B72]"
+          ? "border-border"
           : "border-[#D8DDCC] hover:border-[#91A98D]"
       )}
     >
@@ -37,7 +37,7 @@ function HistoryRow({ item, type }) {
         className={cn(
           "flex size-12 shrink-0 items-center justify-center rounded-2xl",
           isExpired
-            ? "bg-[#F4E0D5] text-[#A65D42] dark:bg-[#493027] dark:text-[#E5A58A]"
+            ? "bg-muted text-muted-foreground"
             : "bg-[#E3EBD9] text-[#496D53] dark:bg-[#293D30] dark:text-[#A7C6A5]"
         )}
       >
@@ -66,8 +66,8 @@ function HistoryRow({ item, type }) {
         className={cn(
           "inline-flex shrink-0 items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-semibold",
           isExpired
-            ? "bg-[#F5DFD5] text-[#A34F36] dark:bg-[#482B25] dark:text-[#F0A58D]"
-            : "bg-[#DDEBD7] text-[#347044] dark:bg-[#253D2D] dark:text-[#A4D3A9]"
+            ? "bg-muted text-muted-foreground"
+            : "bg-primary text-primary-foreground"
         )}
       >
         {isExpired ? (
@@ -98,7 +98,7 @@ function EmptyHistory({ received = false }) {
 
         <p className="mt-1 max-w-xs text-sm text-muted-foreground">
           {received
-            ? "Food you receive through Anna Daan will appear here."
+            ? "Food you receive through AnnaDaan will appear here."
             : "Your completed food donations will appear here."}
         </p>
       </div>
@@ -107,6 +107,15 @@ function EmptyHistory({ received = false }) {
 }
 
 export default function DonationHistory() {
+  return (
+    <>
+      <PageHeader title="History" />
+      <HistoryContent />
+    </>
+  )
+}
+
+function HistoryContent() {
   const donatedCount = donatedHistory.length
   const receivedCount = receivedHistory.length
 
@@ -121,7 +130,7 @@ export default function DonationHistory() {
   )
 
   return (
-    <div className="space-y-6 px-5 pt-8 pb-8 md:space-y-8 md:px-0 md:pt-10">
+    <div className="space-y-6 px-5 pt-2 pb-8 md:space-y-8 md:px-0 md:pt-4">
 
       {/* Page Heading */}
       <div>
@@ -135,7 +144,7 @@ export default function DonationHistory() {
         </h1>
 
         <p className="mt-1 text-sm text-muted-foreground md:text-base">
-          A record of the food shared and received through Anna Daan.
+          A record of the food shared and received through AnnaDaan.
         </p>
       </div>
 
