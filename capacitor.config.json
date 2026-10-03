@@ -1,11 +1,13 @@
-{
-  "appId": "com.annadaan.app",
-  "appName": "AnnaDaan",
-  "webDir": "dist",
-  "plugins": {
-    "FirebaseAuthentication": {
-      "authProviders": ["google.com"],
-      "skipNativeAuth": true
+﻿{
+    "appId": "com.annadaan.app",
+    "appName": "AnnaDaan",
+    "webDir": "dist",
+    "plugins": {
+        "FirebaseAuthentication": {
+            "providers": [
+                "google.com"
+            ],
+            "skipNativeAuth": true
+        }
     }
-  }
 }
