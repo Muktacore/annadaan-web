@@ -2,7 +2,7 @@
 import { NavLink, Link, useNavigate } from "react-router-dom"
 import { House, MapPin, HandHeart, History, User, Plus, LogOut } from "lucide-react"
 import { cn } from "@/lib/utils"
-import { currentUser } from "@/lib/mockData"
+import { useAuth } from "@/context/AuthContext"
 import ThemeToggle from "@/components/ThemeToggle"
 import { logOut } from "@/lib/auth"
 
@@ -12,6 +12,7 @@ const link = ({ isActive }) => cn(base, isActive ? "bg-primary text-primary-fore
 
 export default function Sidebar() {
   const navigate = useNavigate()
+  const { user } = useAuth()
 
   const handleLogout = async () => {
     try {
@@ -52,7 +53,7 @@ export default function Sidebar() {
 
       <div className="space-y-1 border-t pt-4">
         <p className="truncate px-4 pb-2 text-xs text-muted-foreground">
-          {currentUser.email}
+          {user?.email}
         </p>
 
         <ThemeToggle variant="row" className={cn(base, idle)} />

@@ -26,19 +26,21 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { cn } from "@/lib/utils"
-import { currentUser, donatedHistory } from "@/lib/mockData"
+import { donatedHistory } from "@/lib/mockData"
+import { useAuth } from "@/context/AuthContext"
 import { logOut } from "@/lib/auth"
 
 export default function Profile() {
   const navigate = useNavigate()
   const fileInputRef = useRef(null)
+  const { user } = useAuth()
 
   const [editing, setEditing] = useState(false)
-  const [avatar, setAvatar] = useState(null)
+  const [avatar, setAvatar] = useState(user?.photoURL || null)
 
   const [profile, setProfile] = useState({
-    name: currentUser.name,
-    email: currentUser.email,
+    name: user?.displayName || user?.email?.split("@")[0] || "",
+    email: user?.email || "",
     location: "",
     bio: "A little kindness goes a long way.",
   })
@@ -162,6 +164,7 @@ export default function Profile() {
                   {avatar ? (
                     <img
                       src={avatar}
+                      referrerPolicy="no-referrer"
                       alt="Your profile"
                       className="size-full object-cover"
                     />
