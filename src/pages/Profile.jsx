@@ -27,6 +27,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { cn } from "@/lib/utils"
 import { currentUser, donatedHistory } from "@/lib/mockData"
+import { logOut } from "@/lib/auth"
 
 export default function Profile() {
   const navigate = useNavigate()
