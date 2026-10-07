@@ -1,5 +1,5 @@
 import { Capacitor } from "@capacitor/core"
-import { FirebaseAuthentication } from "@capacitor-firebase/authentication"
+import { SocialLogin } from "@capgo/capacitor-social-login"
 import {
   GoogleAuthProvider,
   createUserWithEmailAndPassword,
@@ -11,16 +11,22 @@ import {
 } from "firebase/auth"
 import { auth } from "@/lib/firebase"
 
-// Native app: Google's own sign-in sheet via the Capacitor plugin, then hand the ID token to the web SDK.
-// Browser (laptop demo): normal popup sign-in. signInWithPopup is never used inside the native WebView.
+// Native app: native Google Sign-In via @capgo/capacitor-social-login, then hand
+// the ID token to Firebase manually. Avoids both the broken Android Credential
+// Manager path AND signInWithRedirect's storage-partitioning failure in a
+// Capacitor WebView. Browser (laptop demo): normal popup, unaffected.
 export async function signInWithGoogle() {
   if (Capacitor.isNativePlatform()) {
-    const result = await FirebaseAuthentication.signInWithGoogle()
-    const idToken = result.credential?.idToken
-    if (!idToken) throw new Error("Google sign-in returned no ID token")
-    return signInWithCredential(auth, GoogleAuthProvider.credential(idToken))
+    const result = await SocialLogin.login({
+      provider: "google",
+      options: {},
+    })
+    const idToken = result.result.idToken
+    const credential = GoogleAuthProvider.credential(idToken)
+    return signInWithCredential(auth, credential)
   }
-  return signInWithPopup(auth, new GoogleAuthProvider())
+  const provider = new GoogleAuthProvider()
+  return signInWithPopup(auth, provider)
 }
 
 export function signInWithEmail(email, password) {
@@ -34,9 +40,6 @@ export async function signUpWithEmail(name, email, password) {
 }
 
 export async function logOut() {
-  if (Capacitor.isNativePlatform()) {
-    await FirebaseAuthentication.signOut()
-  }
   await signOut(auth)
 }
 

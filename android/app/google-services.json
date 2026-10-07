@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "702783850562",
+    "project_id": "annadaan-web-3109",
+    "storage_bucket": "annadaan-web-3109.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:702783850562:android:9a21bed91557146826c5db",
+        "android_client_info": {
+          "package_name": "com.annadaan.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "702783850562-7aci3g4brucdgjjrsfs7i6nqm80h5oj9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.annadaan.app",
+            "certificate_hash": "b4ed3e4a7e060aab3aae3828016f13d031717cf8"
+          }
+        },
+        {
+          "client_id": "702783850562-9pg9fo03cqabvnlca6mmd3n0j3p1sjc3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCfynLcLyGV9FHD_8ZJ5sgEw55k3f-M1uw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "702783850562-9pg9fo03cqabvnlca6mmd3n0j3p1sjc3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
