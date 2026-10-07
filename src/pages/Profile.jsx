@@ -28,6 +28,7 @@ import { Label } from "@/components/ui/label"
 import { cn } from "@/lib/utils"
 import { currentUser, donatedHistory } from "@/lib/mockData"
 import { logOut } from "@/lib/auth"
+import { logOut } from "@/lib/auth"
 
 export default function Profile() {
   const navigate = useNavigate()
@@ -75,6 +76,15 @@ export default function Profile() {
 
     reader.readAsDataURL(file)
     e.target.value = ""
+  }
+
+  const handleLogout = async () => {
+    try {
+      await logOut()
+    } catch (err) {
+      console.error("Logout failed:", err)
+    }
+    navigate("/login")
   }
 
   const displayName = savedProfile.name.trim() || "Food Friend"
@@ -517,7 +527,7 @@ export default function Profile() {
 
             <Button
               variant="outline"
-              onClick={() => navigate("/login")}
+              onClick={handleLogout}
               className="mt-6 h-12 w-full rounded-xl border-[#E7CFC1] bg-[#F9EEE8] font-semibold text-[#A65F45] hover:bg-[#F3DFD7] dark:border-[#614638] dark:bg-[#382C25] dark:text-[#E5A58A] dark:hover:bg-[#493027]"
             >
               <LogOut size={17} />
