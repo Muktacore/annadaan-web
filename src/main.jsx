@@ -4,6 +4,7 @@ import { HashRouter } from "react-router-dom"
 import { SocialLogin } from "@capgo/capacitor-social-login"
 import "./index.css"
 import App from "./App.jsx"
+import { AuthProvider } from "@/context/AuthContext"
 
 if (localStorage.getItem("theme") === "dark") {
   document.documentElement.classList.add("dark")
@@ -17,8 +18,10 @@ SocialLogin.initialize({
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <HashRouter>
-      <App />
-    </HashRouter>
+    <AuthProvider>
+      <HashRouter>
+        <App />
+      </HashRouter>
+    </AuthProvider>
   </StrictMode>
 )
