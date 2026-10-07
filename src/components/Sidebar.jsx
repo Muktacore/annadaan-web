@@ -5,7 +5,6 @@ import { cn } from "@/lib/utils"
 import { currentUser } from "@/lib/mockData"
 import ThemeToggle from "@/components/ThemeToggle"
 import { logOut } from "@/lib/auth"
-import { logOut } from "@/lib/auth"
 
 const base = "flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium transition-colors"
 const idle = "text-muted-foreground hover:bg-accent hover:text-foreground"
