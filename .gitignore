@@ -25,3 +25,4 @@ dist-ssr
 
 # Agent Logs
 .agent_logs/
+android/app/google-services.json
