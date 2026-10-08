@@ -3,7 +3,8 @@ import { Utensils, Leaf, Users, Plus, Sprout } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import DonationCard from "@/components/DonationCard"
 import ThemeToggle from "@/components/ThemeToggle"
-import { donations, currentUser } from "@/lib/mockData"
+import { donations } from "@/lib/mockData"
+import { useAuth } from "@/context/AuthContext"
 
 const STATS = [
   { icon: Utensils, value: "128", label: "Meals shared" },
@@ -13,6 +14,8 @@ const STATS = [
 
 export default function Home() {
   const navigate = useNavigate()
+  const { user } = useAuth()
+  const firstName = (user?.displayName || user?.email?.split("@")[0] || "Friend").split(" ")[0]
   const nearby = donations
     .filter((d) => d.status === "available")
     .sort((a, b) => a.distanceKm - b.distanceKm)
@@ -22,7 +25,7 @@ export default function Home() {
       <div className="flex items-start justify-between">
         <div>
           <p className="text-sm text-muted-foreground">Namaste,</p>
-          <h1 className="text-2xl font-extrabold md:text-4xl">{currentUser.name.split(" ")[0]} 👋</h1>
+          <h1 className="text-2xl font-extrabold md:text-4xl">{firstName} 👋</h1>
         </div>
         <ThemeToggle className="md:hidden" />
       </div>

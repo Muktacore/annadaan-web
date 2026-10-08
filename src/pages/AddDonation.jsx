@@ -1,5 +1,6 @@
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
+import { useAuth } from "@/context/AuthContext"
 import { Camera, MapPin, Check } from "lucide-react"
 import PageHeader from "@/components/PageHeader"
 import { Button } from "@/components/ui/button"
@@ -7,7 +8,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import {
-  CATEGORY_LABELS, STORAGE_LABELS, COVERED_LABELS, UNITS, toOptions, currentUser,
+  CATEGORY_LABELS, STORAGE_LABELS, COVERED_LABELS, UNITS, toOptions,
 } from "@/lib/mockData"
 
 const FALLBACK_LOCATION = { lat: 19.3919, lng: 72.8397 }
@@ -34,6 +35,7 @@ function SelectField({ label, value, onChange, options, placeholder = "Select" }
 
 export default function AddDonation() {
   const navigate = useNavigate()
+  const { user } = useAuth()
   const [form, setForm] = useState({
     foodCategory: "",
     cookedAt: nowLocal(),
@@ -73,8 +75,8 @@ export default function AddDonation() {
   const submit = (e) => {
     e.preventDefault()
     const donation = {
-      donorId: currentUser.id,
-      donorName: currentUser.name,
+      donorId: user?.uid,
+      donorName: user?.displayName || user?.email?.split("@")[0] || "Anonymous",
       foodCategory: form.foodCategory,
       foodPhotoUrl: null, // TODO Step 4/20: upload photo to Firebase Storage, store URL
       cookedAt: new Date(form.cookedAt),
