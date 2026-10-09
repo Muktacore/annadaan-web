@@ -17,7 +17,11 @@ export default function DonationCard({ donation: d, index = 0 }) {
         className="flex items-center gap-3 rounded-3xl border bg-card p-4 shadow-sm transition-shadow hover:shadow-md"
       >
         <div className="flex size-14 shrink-0 items-center justify-center rounded-2xl bg-secondary text-primary">
-          <CategoryIcon category={d.foodCategory} className="size-7" />
+          {d.foodPhotoUrl ? (
+            <img src={d.foodPhotoUrl} alt="" className="size-full rounded-2xl object-cover" />
+          ) : (
+            <CategoryIcon category={d.foodCategory} className="size-7" />
+          )}
         </div>
         <div className="min-w-0 flex-1 space-y-1">
           <p className="truncate font-semibold">
@@ -27,7 +31,7 @@ export default function DonationCard({ donation: d, index = 0 }) {
           <div className="flex items-center gap-3 text-xs text-muted-foreground">
             <span className="inline-flex items-center gap-1">
               <MapPin className="size-3.5" />
-              {d.distanceKm} km
+              {d.distanceKm != null ? `${d.distanceKm} km` : "Nearby"}
             </span>
             <span className="inline-flex items-center gap-1">
               <Clock className="size-3.5" />
@@ -35,7 +39,7 @@ export default function DonationCard({ donation: d, index = 0 }) {
             </span>
           </div>
         </div>
-        <FreshnessBadge label={d.freshnessLabel} compact />
+        {d.freshnessLabel && <FreshnessBadge label={d.freshnessLabel} compact />}
       </Link>
     </motion.div>
   )

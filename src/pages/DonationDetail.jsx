@@ -5,8 +5,11 @@ import CategoryIcon from "@/components/CategoryIcon"
 import FreshnessBadge from "@/components/FreshnessBadge"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+import { useDonation } from "@/hooks/useDonations"
+import { useUserLocation } from "@/hooks/useUserLocation"
+import { distanceKm as calcKm } from "@/lib/donations"
 import {
-  getDonation, CATEGORY_LABELS, STORAGE_LABELS, COVERED_LABELS, SOURCE_LABELS, formatElapsed,
+  CATEGORY_LABELS, STORAGE_LABELS, COVERED_LABELS, SOURCE_LABELS, formatElapsed,
 } from "@/lib/mockData"
 
 function InfoTile({ icon: Icon, label, value }) {
@@ -36,7 +39,18 @@ function Actions({ canRequest, navigate }) {
 export default function DonationDetail() {
   const { id } = useParams()
   const navigate = useNavigate()
-  const d = getDonation(id)
+  const { donation, loading } = useDonation(id)
+  const origin = useUserLocation()
+  const d = donation ? { ...donation, distanceKm: calcKm(origin, donation.location) } : null
+
+  if (loading) {
+    return (
+      <div className="min-h-dvh">
+        <PageHeader title="Donation" />
+        <p className="px-5 pt-6 text-muted-foreground">Loading...</p>
+      </div>
+    )
+  }
 
   if (!d) {
     return (
@@ -50,7 +64,8 @@ export default function DonationDetail() {
   }
 
   const canRequest = d.status === "available" && d.freshnessLabel !== "unsafe"
-  const lowConfidence = d.confidenceScore < 0.6
+  const hasFreshness = Boolean(d.freshnessLabel)
+  const lowConfidence = hasFreshness && d.confidenceScore < 0.6
 
   return (
     <div className="flex min-h-dvh flex-col md:min-h-0">
@@ -59,14 +74,18 @@ export default function DonationDetail() {
       <div className="grid flex-1 gap-5 px-5 pt-2 pb-6 md:grid-cols-2 md:gap-8 md:px-0">
         <div className="space-y-5">
           <div className="flex h-44 items-center justify-center rounded-3xl bg-secondary text-primary md:h-72">
-            <CategoryIcon category={d.foodCategory} className="size-20 md:size-28" />
+            {d.foodPhotoUrl ? (
+              <img src={d.foodPhotoUrl} alt="Donated food" className="size-full rounded-3xl object-cover" />
+            ) : (
+              <CategoryIcon category={d.foodCategory} className="size-20 md:size-28" />
+            )}
           </div>
 
           <div className="grid grid-cols-2 gap-3">
             <InfoTile icon={Clock} label="Cooked" value={formatElapsed(d.cookedAt)} />
             <InfoTile icon={Thermometer} label="Storage" value={STORAGE_LABELS[d.storageCondition]} />
             <InfoTile icon={Package} label="Cover" value={COVERED_LABELS[d.isCovered]} />
-            <InfoTile icon={MapPin} label="Distance" value={`${d.distanceKm} km away`} />
+            <InfoTile icon={MapPin} label="Distance" value={d.distanceKm != null ? `${d.distanceKm} km away` : "-"} />
           </div>
 
           <div className="flex items-center gap-3 rounded-3xl border bg-card p-4">
@@ -86,9 +105,10 @@ export default function DonationDetail() {
               <h2 className="text-xl font-bold md:text-3xl">{CATEGORY_LABELS[d.foodCategory]}</h2>
               <p className="text-sm text-muted-foreground">{d.quantity} {d.unit}</p>
             </div>
-            <FreshnessBadge label={d.freshnessLabel} />
+            {d.freshnessLabel && <FreshnessBadge label={d.freshnessLabel} />}
           </div>
 
+          {hasFreshness ? (
           <section className="space-y-3 rounded-3xl border bg-card p-4 shadow-sm md:p-6">
             <h3 className="font-semibold">Freshness check</h3>
             <div>
@@ -115,6 +135,11 @@ export default function DonationDetail() {
             </ul>
             <p className="text-xs text-muted-foreground">Checked by: {SOURCE_LABELS[d.freshnessSource]}</p>
           </section>
+          ) : (
+            <section className="rounded-3xl border bg-card p-4 text-sm text-muted-foreground shadow-sm md:p-6">
+              Freshness check pending. The safety check runs once the donation is analysed.
+            </section>
+          )}
 
           <div className="hidden gap-3 md:flex">
             <Actions canRequest={canRequest} navigate={navigate} />

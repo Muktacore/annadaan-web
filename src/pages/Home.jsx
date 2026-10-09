@@ -3,7 +3,9 @@ import { Utensils, Leaf, Users, Plus, Sprout } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import DonationCard from "@/components/DonationCard"
 import ThemeToggle from "@/components/ThemeToggle"
-import { donations } from "@/lib/mockData"
+import { useAvailableDonations } from "@/hooks/useDonations"
+import { useUserLocation } from "@/hooks/useUserLocation"
+import { distanceKm as calcKm } from "@/lib/donations"
 import { useAuth } from "@/context/AuthContext"
 
 const STATS = [
@@ -16,7 +18,10 @@ export default function Home() {
   const navigate = useNavigate()
   const { user } = useAuth()
   const firstName = (user?.displayName || user?.email?.split("@")[0] || "Friend").split(" ")[0]
-  const nearby = donations
+  const { donations, loading } = useAvailableDonations()
+  const origin = useUserLocation()
+  const withDistance = donations.map((d) => ({ ...d, distanceKm: calcKm(origin, d.location) }))
+  const nearby = withDistance
     .filter((d) => d.status === "available")
     .sort((a, b) => a.distanceKm - b.distanceKm)
 
@@ -59,6 +64,10 @@ export default function Home() {
           <Link to="/map" className="text-sm font-medium text-primary">View map</Link>
         </div>
         <div className="grid gap-3 md:grid-cols-2 md:gap-4 xl:grid-cols-3">
+          {loading && <p className="col-span-full text-sm text-muted-foreground">Loading donations...</p>}
+          {!loading && nearby.length === 0 && (
+            <p className="col-span-full text-sm text-muted-foreground">No donations nearby yet. Be the first to donate!</p>
+          )}
           {nearby.map((d, i) => (
             <DonationCard key={d.id} donation={d} index={i} />
           ))}
