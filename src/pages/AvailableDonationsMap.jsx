@@ -22,7 +22,14 @@ import {
 
 import DonationCard from "@/components/DonationCard"
 import CategoryIcon from "@/components/CategoryIcon"
-import FreshnessBadge from "@/components/FreshnessBadge"
+import BaseFreshnessBadge from "@/components/FreshnessBadge"
+import { useAvailableDonations } from "@/hooks/useDonations"
+import { useUserLocation } from "@/hooks/useUserLocation"
+import { distanceKm as calcKm } from "@/lib/donations"
+
+// Only render a freshness badge once an ML/rule result exists.
+const FreshnessBadge = (props) =>
+  props.label ? <BaseFreshnessBadge {...props} /> : null
 
 import { donations, CATEGORY_LABELS } from "@/lib/mockData"
 
@@ -50,9 +57,15 @@ function FitBounds({ points }) {
 }
 
 export default function AvailableDonationsMap() {
+  const { donations: live } = useAvailableDonations()
+  const origin = useUserLocation()
+
   const available = useMemo(
-    () => donations.filter((d) => d.status === "available"),
-    []
+    () =>
+      live
+        .filter((d) => d.status === "available" && d.location)
+        .map((d) => ({ ...d, distanceKm: calcKm(origin, d.location) })),
+    [live, origin]
   )
 
   const points = useMemo(
@@ -212,7 +225,7 @@ export default function AvailableDonationsMap() {
                       color: "#fff",
                       weight: 2,
                       fillColor:
-                        STATUS_COLOR[d.freshnessLabel] ?? STATUS_COLOR.safe,
+                        STATUS_COLOR[d.freshnessLabel] ?? "#81927A",
                       fillOpacity: 0.95,
                     }}
                   >
@@ -231,7 +244,7 @@ export default function AvailableDonationsMap() {
                         </div>
 
                         <p className="text-xs text-muted-foreground">
-                          {d.donorName} · {d.quantity} {d.unit} · {d.distanceKm} km
+                          {d.donorName} · {d.quantity} {d.unit} · {d.distanceKm != null ? `${d.distanceKm} km` : "nearby"}
                         </p>
 
                         <FreshnessBadge
