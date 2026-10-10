@@ -14,11 +14,9 @@ import CategoryIcon from "@/components/CategoryIcon"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 import { cn } from "@/lib/utils"
 
-import {
-  donatedHistory,
-  receivedHistory,
-  CATEGORY_LABELS,
-} from "@/lib/mockData"
+import { receivedHistory, CATEGORY_LABELS } from "@/lib/mockData"
+import { useAuth } from "@/context/AuthContext"
+import { useMyDonations } from "@/hooks/useMyDonations"
 
 function HistoryRow({ item, type }) {
   const isDonation = type === "donated"
@@ -79,7 +77,7 @@ function HistoryRow({ item, type }) {
         {isExpired
           ? "Expired"
           : isDonation
-            ? "Completed"
+            ? (item.status === "claimed" ? "Completed" : "Available")
             : "Received"}
       </span>
     </article>
@@ -116,6 +114,24 @@ export default function DonationHistory() {
 }
 
 function HistoryContent() {
+  const { user } = useAuth()
+  const { donations: myDonations } = useMyDonations(user?.uid)
+  const donatedHistory = useMemo(
+    () =>
+      myDonations.map((d) => ({
+        id: d.id,
+        foodCategory: d.foodCategory,
+        quantity: d.quantity,
+        unit: d.unit,
+        status: d.status,
+        date: d.createdAt.toLocaleDateString("en-IN", {
+          day: "numeric",
+          month: "short",
+          year: "numeric",
+        }),
+      })),
+    [myDonations]
+  )
   const donatedCount = donatedHistory.length
   const receivedCount = receivedHistory.length
 
@@ -126,7 +142,7 @@ function HistoryContent() {
           sum + (item.status === "claimed" ? item.quantity : 0),
         0
       ),
-    []
+    [donatedHistory]
   )
 
   return (
@@ -241,8 +257,8 @@ function HistoryContent() {
       {/* Footer Note */}
       <p className="flex items-start gap-2 text-xs leading-relaxed text-muted-foreground">
         <PackageCheck className="mt-0.5 size-4 shrink-0 text-primary" />
-        This history currently uses sample project data. Records will be
-        loaded from your account when Firebase is connected.
+        Donated history is live from your account. Received history will appear once
+        food requests are connected.
       </p>
 
     </div>
