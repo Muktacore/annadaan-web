@@ -31,7 +31,7 @@ import { distanceKm as calcKm } from "@/lib/donations"
 const FreshnessBadge = (props) =>
   props.label ? <BaseFreshnessBadge {...props} /> : null
 
-import { donations, CATEGORY_LABELS } from "@/lib/mockData"
+import { CATEGORY_LABELS } from "@/lib/mockData"
 
 const STATUS_COLOR = {
   safe: "#4F8A4B",
