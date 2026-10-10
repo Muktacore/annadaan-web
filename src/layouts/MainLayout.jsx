@@ -6,7 +6,7 @@ import BottomNav from "@/components/BottomNav";
 // On laptop the sidebar is always there.
 export default function MainLayout({ focus = false }) {
   return (
-    <div className="min-h-dvh md:flex">
+    <div className="flex min-h-dvh">
       <Sidebar />
       <div className="flex min-w-0 flex-1 flex-col">
         <main className="mx-auto w-full max-w-6xl flex-1 md:px-6 lg:px-8">

@@ -103,7 +103,7 @@ export default function DonationDetail() {
           <div className="flex items-start justify-between gap-3">
             <div>
               <h2 className="text-xl font-bold md:text-3xl">{CATEGORY_LABELS[d.foodCategory]}</h2>
-              <p className="text-sm text-muted-foreground">{d.quantity} {d.unit}</p>
+              <p className="text-sm text-muted-foreground">{d.quantity} {d.quantity === 1 ? d.unit.replace(/s$/, "") : d.unit}</p>
             </div>
             {d.freshnessLabel && <FreshnessBadge label={d.freshnessLabel} />}
           </div>

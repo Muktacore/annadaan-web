@@ -25,7 +25,7 @@ export default function DonationCard({ donation: d, index = 0 }) {
         </div>
         <div className="min-w-0 flex-1 space-y-1">
           <p className="truncate font-semibold">
-            {CATEGORY_LABELS[d.foodCategory]} · {d.quantity} {d.unit}
+            {CATEGORY_LABELS[d.foodCategory]} · {d.quantity} {d.quantity === 1 ? d.unit.replace(/s$/, "") : d.unit}
           </p>
           <p className="truncate text-sm text-muted-foreground">{d.donorName}</p>
           <div className="flex items-center gap-3 text-xs text-muted-foreground">
