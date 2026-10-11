@@ -26,18 +26,21 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { cn } from "@/lib/utils"
-import { currentUser, donatedHistory } from "@/lib/mockData"
+import { donatedHistory } from "@/lib/mockData"
+import { useAuth } from "@/context/AuthContext"
+import { logOut } from "@/lib/auth"
 
 export default function Profile() {
   const navigate = useNavigate()
   const fileInputRef = useRef(null)
+  const { user } = useAuth()
 
   const [editing, setEditing] = useState(false)
-  const [avatar, setAvatar] = useState(null)
+  const [avatar, setAvatar] = useState(user?.photoURL || null)
 
   const [profile, setProfile] = useState({
-    name: currentUser.name,
-    email: currentUser.email,
+    name: user?.displayName || user?.email?.split("@")[0] || "",
+    email: user?.email || "",
     location: "",
     bio: "A little kindness goes a long way.",
   })
@@ -74,6 +77,15 @@ export default function Profile() {
 
     reader.readAsDataURL(file)
     e.target.value = ""
+  }
+
+  const handleLogout = async () => {
+    try {
+      await logOut()
+    } catch (err) {
+      console.error("Logout failed:", err)
+    }
+    navigate("/login")
   }
 
   const displayName = savedProfile.name.trim() || "Food Friend"
@@ -152,6 +164,7 @@ export default function Profile() {
                   {avatar ? (
                     <img
                       src={avatar}
+                      referrerPolicy="no-referrer"
                       alt="Your profile"
                       className="size-full object-cover"
                     />
@@ -516,7 +529,7 @@ export default function Profile() {
 
             <Button
               variant="outline"
-              onClick={() => navigate("/login")}
+              onClick={handleLogout}
               className="mt-6 h-12 w-full rounded-xl border-[#E7CFC1] bg-[#F9EEE8] font-semibold text-[#A65F45] hover:bg-[#F3DFD7] dark:border-[#614638] dark:bg-[#382C25] dark:text-[#E5A58A] dark:hover:bg-[#493027]"
             >
               <LogOut size={17} />

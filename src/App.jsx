@@ -1,6 +1,7 @@
 import { Routes, Route, Navigate } from "react-router-dom"
 import AppShell from "@/layouts/AppShell"
 import MainLayout from "@/layouts/MainLayout"
+import ProtectedRoute from "@/components/ProtectedRoute"
 import Splash from "@/pages/Splash"
 import Login from "@/pages/Login"
 import Home from "@/pages/Home"
@@ -18,7 +19,13 @@ export default function App() {
         <Route path="/" element={<Splash />} />
         <Route path="/login" element={<Login />} />
 
-        <Route element={<MainLayout />}>
+        <Route
+          element={
+            <ProtectedRoute>
+              <MainLayout />
+            </ProtectedRoute>
+          }
+        >
           <Route path="/home" element={<Home />} />
           <Route path="/map" element={<AvailableDonationsMap />} />
           <Route path="/requests" element={<MyRequests />} />
@@ -27,7 +34,13 @@ export default function App() {
           <Route path="/history" element={<DonationHistory />} />
         </Route>
 
-        <Route element={<MainLayout focus />}>
+        <Route
+          element={
+            <ProtectedRoute>
+              <MainLayout focus />
+            </ProtectedRoute>
+          }
+        >
           <Route path="/donate" element={<AddDonation />} />
           <Route path="/donation/:id" element={<DonationDetail />} />
         </Route>

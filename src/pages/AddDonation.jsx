@@ -1,5 +1,6 @@
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
+import { useAuth } from "@/context/AuthContext"
 import { Camera, MapPin, Check } from "lucide-react"
 import PageHeader from "@/components/PageHeader"
 import { Button } from "@/components/ui/button"
@@ -7,8 +8,9 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import {
-  CATEGORY_LABELS, STORAGE_LABELS, COVERED_LABELS, UNITS, toOptions, currentUser,
+  CATEGORY_LABELS, STORAGE_LABELS, COVERED_LABELS, UNITS, toOptions,
 } from "@/lib/mockData"
+import { createDonation } from "@/lib/donations"
 
 const FALLBACK_LOCATION = { lat: 19.3919, lng: 72.8397 }
 const nowLocal = () =>
@@ -34,6 +36,7 @@ function SelectField({ label, value, onChange, options, placeholder = "Select" }
 
 export default function AddDonation() {
   const navigate = useNavigate()
+  const { user } = useAuth()
   const [form, setForm] = useState({
     foodCategory: "",
     cookedAt: nowLocal(),
@@ -45,6 +48,8 @@ export default function AddDonation() {
   const [photo, setPhoto] = useState(null)
   const [location, setLocation] = useState(null)
   const [locating, setLocating] = useState(false)
+  const [saving, setSaving] = useState(false)
+  const [error, setError] = useState("")
   const [done, setDone] = useState(false)
 
   const set = (key) => (value) => setForm((f) => ({ ...f, [key]: value }))
@@ -70,25 +75,20 @@ export default function AddDonation() {
 
   const canSubmit = form.foodCategory && Number(form.quantity) > 0 && form.cookedAt && location
 
-  const submit = (e) => {
+  const submit = async (e) => {
     e.preventDefault()
-    const donation = {
-      donorId: currentUser.id,
-      donorName: currentUser.name,
-      foodCategory: form.foodCategory,
-      foodPhotoUrl: null, // TODO Step 4/20: upload photo to Firebase Storage, store URL
-      cookedAt: new Date(form.cookedAt),
-      quantity: Number(form.quantity),
-      unit: form.unit,
-      storageCondition: form.storageCondition,
-      isCovered: form.isCovered,
-      location: { lat: location.lat, lng: location.lng },
-      createdAt: new Date(),
-      status: "available",
+    if (!user || saving) return
+    setSaving(true)
+    setError("")
+    try {
+      await createDonation({ user, form, photoFile: photo?.file ?? null, location })
+      setDone(true)
+      setTimeout(() => navigate("/home"), 1400)
+    } catch (err) {
+      console.error("Posting donation failed:", err)
+      setError(err?.message || "Could not post the donation. Please try again.")
+      setSaving(false)
     }
-    console.log("New donation (goes to Firestore later):", donation)
-    setDone(true)
-    setTimeout(() => navigate("/home"), 1400)
   }
 
   if (done) {
@@ -154,14 +154,18 @@ export default function AddDonation() {
           <Label>Pickup location</Label>
           <Button type="button" variant="outline" className="w-full justify-start" onClick={getLocation} disabled={locating}>
             <MapPin />
-            {locating ? "Getting location…" : location
+            {locating ? "Getting location..." : location
               ? `${location.lat.toFixed(4)}, ${location.lng.toFixed(4)}${location.approx ? " (default)" : ""}`
               : "Use my current location"}
           </Button>
         </div>
 
-        <Button type="submit" size="lg" className="w-full" disabled={!canSubmit}>
-          Post donation
+        {error && (
+          <p className="rounded-2xl bg-destructive/10 p-3 text-sm text-destructive">{error}</p>
+        )}
+
+        <Button type="submit" size="lg" className="w-full" disabled={!canSubmit || saving}>
+          {saving ? "Posting..." : "Post donation"}
         </Button>
       </form>
     </div>

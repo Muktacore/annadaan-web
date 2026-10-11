@@ -1,5 +1,10 @@
 import { initializeApp } from "firebase/app"
-import { getAuth, initializeAuth, indexedDBLocalPersistence } from "firebase/auth"
+import {
+  getAuth,
+  initializeAuth,
+  indexedDBLocalPersistence,
+  browserPopupRedirectResolver,
+} from "firebase/auth"
 import { getFirestore } from "firebase/firestore"
 import { getStorage } from "firebase/storage"
 import { Capacitor } from "@capacitor/core"
@@ -15,9 +20,14 @@ const firebaseConfig = {
 
 export const app = initializeApp(firebaseConfig)
 
-// Inside Capacitor's WebView, use IndexedDB persistence and skip the popup/redirect resolver.
+// Inside Capacitor's WebView, use IndexedDB persistence. A resolver is now
+// required too, since signInWithRedirect needs one and initializeAuth()
+// doesn't include a default the way getAuth() does.
 export const auth = Capacitor.isNativePlatform()
-  ? initializeAuth(app, { persistence: indexedDBLocalPersistence })
+  ? initializeAuth(app, {
+      persistence: indexedDBLocalPersistence,
+      popupRedirectResolver: browserPopupRedirectResolver,
+    })
   : getAuth(app)
 
 export const db = getFirestore(app)

@@ -14,11 +14,10 @@ import CategoryIcon from "@/components/CategoryIcon"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 import { cn } from "@/lib/utils"
 
-import {
-  donatedHistory,
-  receivedHistory,
-  CATEGORY_LABELS,
-} from "@/lib/mockData"
+import { CATEGORY_LABELS } from "@/lib/mockData"
+import { useMyClaims } from "@/hooks/useClaims"
+import { useAuth } from "@/context/AuthContext"
+import { useMyDonations } from "@/hooks/useMyDonations"
 
 function HistoryRow({ item, type }) {
   const isDonation = type === "donated"
@@ -79,7 +78,7 @@ function HistoryRow({ item, type }) {
         {isExpired
           ? "Expired"
           : isDonation
-            ? "Completed"
+            ? (item.status === "claimed" ? "Completed" : "Available")
             : "Received"}
       </span>
     </article>
@@ -116,6 +115,44 @@ export default function DonationHistory() {
 }
 
 function HistoryContent() {
+  const { user } = useAuth()
+  const { donations: myDonations } = useMyDonations(user?.uid)
+  const { claims } = useMyClaims(user?.uid)
+  const receivedHistory = useMemo(
+    () =>
+      claims
+        .filter((c) => c.status === "Claimed")
+        .map((c) => ({
+          id: c.id,
+          foodCategory: c.foodCategory,
+          quantity: c.quantity,
+          unit: c.unit,
+          status: "claimed",
+          from: c.donorName,
+          date: c.updatedAt.toLocaleDateString("en-IN", {
+            day: "numeric",
+            month: "short",
+            year: "numeric",
+          }),
+        })),
+    [claims]
+  )
+  const donatedHistory = useMemo(
+    () =>
+      myDonations.map((d) => ({
+        id: d.id,
+        foodCategory: d.foodCategory,
+        quantity: d.quantity,
+        unit: d.unit,
+        status: d.status,
+        date: d.createdAt.toLocaleDateString("en-IN", {
+          day: "numeric",
+          month: "short",
+          year: "numeric",
+        }),
+      })),
+    [myDonations]
+  )
   const donatedCount = donatedHistory.length
   const receivedCount = receivedHistory.length
 
@@ -126,7 +163,7 @@ function HistoryContent() {
           sum + (item.status === "claimed" ? item.quantity : 0),
         0
       ),
-    []
+    [donatedHistory]
   )
 
   return (
@@ -241,8 +278,8 @@ function HistoryContent() {
       {/* Footer Note */}
       <p className="flex items-start gap-2 text-xs leading-relaxed text-muted-foreground">
         <PackageCheck className="mt-0.5 size-4 shrink-0 text-primary" />
-        This history currently uses sample project data. Records will be
-        loaded from your account when Firebase is connected.
+        History is live from your account. Food you receive appears here once
+        the donor confirms pickup.
       </p>
 
     </div>

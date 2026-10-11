@@ -2,8 +2,9 @@
 import { NavLink, Link, useNavigate } from "react-router-dom"
 import { House, MapPin, HandHeart, History, User, Plus, LogOut } from "lucide-react"
 import { cn } from "@/lib/utils"
-import { currentUser } from "@/lib/mockData"
+import { useAuth } from "@/context/AuthContext"
 import ThemeToggle from "@/components/ThemeToggle"
+import { logOut } from "@/lib/auth"
 
 const base = "flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium transition-colors"
 const idle = "text-muted-foreground hover:bg-accent hover:text-foreground"
@@ -11,6 +12,16 @@ const link = ({ isActive }) => cn(base, isActive ? "bg-primary text-primary-fore
 
 export default function Sidebar() {
   const navigate = useNavigate()
+  const { user } = useAuth()
+
+  const handleLogout = async () => {
+    try {
+      await logOut()
+    } catch (err) {
+      console.error("Logout failed:", err)
+    }
+    navigate("/login")
+  }
 
   return (
     <aside className="sticky top-0 hidden h-dvh w-64 shrink-0 flex-col border-r bg-card p-5 md:flex">
@@ -42,13 +53,13 @@ export default function Sidebar() {
 
       <div className="space-y-1 border-t pt-4">
         <p className="truncate px-4 pb-2 text-xs text-muted-foreground">
-          {currentUser.email}
+          {user?.email}
         </p>
 
         <ThemeToggle variant="row" className={cn(base, idle)} />
 
         <button
-          onClick={() => navigate("/login")}
+          onClick={handleLogout}
           className={cn(base, idle, "text-destructive hover:text-destructive")}
         >
           <LogOut className="size-5" /> Log out

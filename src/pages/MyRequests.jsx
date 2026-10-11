@@ -1,5 +1,5 @@
 
-import { Link, useParams } from "react-router-dom"
+import { Link, useParams, useNavigate } from "react-router-dom"
 import {
   ChevronRight,
   Clock,
@@ -16,16 +16,20 @@ import {
 
 import PageHeader from "@/components/PageHeader"
 import CategoryIcon from "@/components/CategoryIcon"
-import FreshnessBadge from "@/components/FreshnessBadge"
+import BaseFreshnessBadge from "@/components/FreshnessBadge"
+
+// Only render a freshness badge once an ML/rule result exists.
+const FreshnessBadge = (props) =>
+  props.label ? <BaseFreshnessBadge {...props} /> : null
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 import { cn } from "@/lib/utils"
+import { useAuth } from "@/context/AuthContext"
+import { useMyClaims, useClaim } from "@/hooks/useClaims"
+import { cancelClaim } from "@/lib/claims"
 
 import {
-  requests,
-  getRequest,
-  getDonation,
   CATEGORY_LABELS,
   formatElapsed,
 } from "@/lib/mockData"
@@ -48,7 +52,7 @@ const CLAIM_BADGE = {
 }
 
 function RequestRow({ request }) {
-  const donation = getDonation(request.donationId)
+  const donation = request
 
   if (!donation) return null
 
@@ -135,6 +139,8 @@ function EmptyState({ label, history = false }) {
 }
 
 export default function MyRequests() {
+  const { user } = useAuth()
+  const { claims: requests } = useMyClaims(user?.uid)
   const active = requests.filter((r) => r.status !== "Claimed")
   const history = requests.filter((r) => r.status === "Claimed")
 
@@ -277,9 +283,19 @@ export default function MyRequests() {
 
 export function RequestDetail() {
   const { id } = useParams()
+  const navigate = useNavigate()
 
-  const request = getRequest(id)
-  const donation = request ? getDonation(request.donationId) : null
+  const { claim: request, loading } = useClaim(id)
+  const donation = request
+
+  if (loading) {
+    return (
+      <div className="min-h-dvh">
+        <PageHeader title="Request" />
+        <p className="px-5 pt-6 text-muted-foreground">Loading...</p>
+      </div>
+    )
+  }
 
   if (!request || !donation) {
     return (
@@ -481,7 +497,15 @@ export function RequestDetail() {
             <Button
               variant="outline"
               className="w-full rounded-xl border-[#DDB9A8] bg-transparent text-[#A65F45] hover:bg-[#F3DFD7] dark:border-[#754B39] dark:text-[#E5A58A] dark:hover:bg-[#493027]"
-              onClick={() => alert("Cancel comes later")}
+              onClick={async () => {
+                try {
+                  await cancelClaim(request.id)
+                  navigate("/requests")
+                } catch (err) {
+                  console.error(err)
+                  alert(err?.message || "Could not cancel the request")
+                }
+              }}
             >
               <X />
               Cancel request
