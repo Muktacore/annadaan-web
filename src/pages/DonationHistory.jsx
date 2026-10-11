@@ -14,7 +14,8 @@ import CategoryIcon from "@/components/CategoryIcon"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 import { cn } from "@/lib/utils"
 
-import { receivedHistory, CATEGORY_LABELS } from "@/lib/mockData"
+import { CATEGORY_LABELS } from "@/lib/mockData"
+import { useMyClaims } from "@/hooks/useClaims"
 import { useAuth } from "@/context/AuthContext"
 import { useMyDonations } from "@/hooks/useMyDonations"
 
@@ -116,6 +117,26 @@ export default function DonationHistory() {
 function HistoryContent() {
   const { user } = useAuth()
   const { donations: myDonations } = useMyDonations(user?.uid)
+  const { claims } = useMyClaims(user?.uid)
+  const receivedHistory = useMemo(
+    () =>
+      claims
+        .filter((c) => c.status === "Claimed")
+        .map((c) => ({
+          id: c.id,
+          foodCategory: c.foodCategory,
+          quantity: c.quantity,
+          unit: c.unit,
+          status: "claimed",
+          from: c.donorName,
+          date: c.updatedAt.toLocaleDateString("en-IN", {
+            day: "numeric",
+            month: "short",
+            year: "numeric",
+          }),
+        })),
+    [claims]
+  )
   const donatedHistory = useMemo(
     () =>
       myDonations.map((d) => ({
@@ -257,8 +278,8 @@ function HistoryContent() {
       {/* Footer Note */}
       <p className="flex items-start gap-2 text-xs leading-relaxed text-muted-foreground">
         <PackageCheck className="mt-0.5 size-4 shrink-0 text-primary" />
-        Donated history is live from your account. Received history will appear once
-        food requests are connected.
+        History is live from your account. Food you receive appears here once
+        the donor confirms pickup.
       </p>
 
     </div>
