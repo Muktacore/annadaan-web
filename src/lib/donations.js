@@ -3,6 +3,7 @@ import {
   serverTimestamp, Timestamp, GeoPoint,
 } from "firebase/firestore"
 import { db } from "@/lib/firebase"
+import { assessFreshness } from "@/lib/freshnessRules"
 
 const CLOUD_NAME = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME
 const UPLOAD_PRESET = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET
@@ -32,6 +33,16 @@ export async function createDonation({ user, form, photoFile, location }) {
   let foodPhotoUrl = null
   if (photoFile) foodPhotoUrl = await uploadDonationPhoto(photoFile)
 
+  const measuredTempC =
+    form.measuredTempC === "" || form.measuredTempC == null ? null : Number(form.measuredTempC)
+  const fresh = assessFreshness({
+    cookedAt: new Date(form.cookedAt),
+    storageCondition: form.storageCondition,
+    isCovered: form.isCovered,
+    measuredTempC,
+    foodCategory: form.foodCategory,
+  })
+
   await setDoc(ref, {
     donationId: ref.id,
     donorId: user.uid,
@@ -46,6 +57,12 @@ export async function createDonation({ user, form, photoFile, location }) {
     location: new GeoPoint(location.lat, location.lng),
     createdAt: serverTimestamp(),
     status: "available",
+    measuredTempC,
+    freshnessLabel: fresh.freshnessLabel,
+    freshnessSource: fresh.freshnessSource,
+    confidenceScore: fresh.confidenceScore,
+    explanation: fresh.explanation,
+    timeElapsedAtCheck: fresh.timeElapsedAtCheck,
   })
   return ref.id
 }
@@ -64,7 +81,32 @@ export function distanceKm(a, b) {
 }
 
 // Firestore doc -> plain object shaped like the mock donations.
+// Rule-based results age with the food, so recompute them on every read.
+// Results from other sources (cnn, hybrid) are left untouched.
+function withLiveFreshness(d) {
+  if (d.freshnessSource && d.freshnessSource !== "rule_based") return d
+  if (!d.cookedAt) return d
+  try {
+    return {
+      ...d,
+      ...assessFreshness({
+        cookedAt: d.cookedAt,
+        storageCondition: d.storageCondition,
+        isCovered: d.isCovered,
+        measuredTempC: d.measuredTempC ?? null,
+        foodCategory: d.foodCategory,
+      }),
+    }
+  } catch {
+    return d
+  }
+}
+
 export function normalizeDonation(snap) {
+  return withLiveFreshness(baseNormalizeDonation(snap))
+}
+
+function baseNormalizeDonation(snap) {
   const d = snap.data()
   return {
     ...d,

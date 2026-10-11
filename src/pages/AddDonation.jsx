@@ -44,6 +44,7 @@ export default function AddDonation() {
     unit: "plates",
     storageCondition: "room_temp",
     isCovered: "covered",
+    measuredTempC: "",
   })
   const [photo, setPhoto] = useState(null)
   const [location, setLocation] = useState(null)
@@ -149,6 +150,16 @@ export default function AddDonation() {
           onChange={set("storageCondition")} options={toOptions(STORAGE_LABELS)} />
         <SelectField label="Is the food covered?" value={form.isCovered}
           onChange={set("isCovered")} options={toOptions(COVERED_LABELS)} />
+
+        <div className="space-y-2">
+          <Label htmlFor="temp">Food temperature in C (optional)</Label>
+          <Input id="temp" type="number" inputMode="decimal" step="0.1" min="-40" max="200"
+            placeholder="e.g. 65 if kept hot, 4 if chilled" value={form.measuredTempC}
+            onChange={(e) => set("measuredTempC")(e.target.value)} />
+          <p className="text-xs text-muted-foreground">
+            A thermometer reading makes the safety check more accurate.
+          </p>
+        </div>
 
         <div className="space-y-2">
           <Label>Pickup location</Label>
