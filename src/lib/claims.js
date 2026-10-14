@@ -59,6 +59,18 @@ export async function deleteDonationWithClaims(donationId, claims) {
   await batch.commit()
 }
 
+// Donor deletes their own donation. Allowed only while every request on it is
+// still Pending; those Pending claims are removed in the same atomic batch.
+export async function deleteDonationWithClaims(donationId, claims) {
+  if (claims.some((c) => c.status !== "Pending")) {
+    throw new Error("This donation has an accepted request, so it can't be deleted.")
+  }
+  const batch = writeBatch(db)
+  claims.forEach((c) => batch.delete(doc(db, "claims", c.id)))
+  batch.delete(doc(db, "donations", donationId))
+  await batch.commit()
+}
+
 export const acceptClaim = (claimId) =>
   updateDoc(doc(db, "claims", claimId), {
     status: "RequestAccepted",
