@@ -1,6 +1,7 @@
 import { StrictMode } from "react"
 import { createRoot } from "react-dom/client"
 import { HashRouter } from "react-router-dom"
+import { MotionConfig } from "motion/react"
 import { SocialLogin } from "@capgo/capacitor-social-login"
 import "./index.css"
 import App from "./App.jsx"
@@ -18,10 +19,12 @@ SocialLogin.initialize({
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <AuthProvider>
-      <HashRouter>
-        <App />
-      </HashRouter>
-    </AuthProvider>
+    <MotionConfig reducedMotion="user">
+      <AuthProvider>
+        <HashRouter>
+          <App />
+        </HashRouter>
+      </AuthProvider>
+    </MotionConfig>
   </StrictMode>
 )

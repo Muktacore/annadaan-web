@@ -1,9 +1,11 @@
 import { useState } from "react"
 import { useParams, useNavigate, Link } from "react-router-dom"
+import { AnimatePresence, motion } from "motion/react"
 import { MapPin, Clock, Thermometer, Package, MessageCircle, HandHeart, Info, TriangleAlert } from "lucide-react"
 import PageHeader from "@/components/PageHeader"
 import CategoryIcon from "@/components/CategoryIcon"
 import FreshnessBadge from "@/components/FreshnessBadge"
+import AnimatedCheck from "@/components/AnimatedCheck"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { cn } from "@/lib/utils"
@@ -13,6 +15,7 @@ import { useUserLocation } from "@/hooks/useUserLocation"
 import { useMyClaims, useDonationClaims } from "@/hooks/useClaims"
 import { distanceKm as calcKm } from "@/lib/donations"
 import { createClaim, acceptClaim, completeClaim, CLAIM_LABELS } from "@/lib/claims"
+import { liveRow, swap, DURATION, EASE_OUT } from "@/lib/motion"
 import {
   CATEGORY_LABELS, STORAGE_LABELS, COVERED_LABELS, SOURCE_LABELS, formatElapsed,
 } from "@/lib/mockData"
@@ -34,14 +37,40 @@ function InfoTile({ icon: Icon, label, value }) {
   )
 }
 
-function Actions({ enabled, label, busy, onRequest }) {
+function Actions({ enabled, label, busy, done, onRequest }) {
+  const state = done ? "done" : busy ? "busy" : "idle"
+
   return (
     <>
       <Button variant="outline" size="lg" className="flex-1" onClick={() => alert("Chat comes later")}>
         <MessageCircle /> Message
       </Button>
-      <Button size="lg" className="flex-1" disabled={!enabled || busy} onClick={onRequest}>
-        <HandHeart /> {label}
+      <Button
+        size="lg"
+        className="flex-1 motion-safe:active:scale-[0.98]"
+        disabled={!enabled || busy}
+        onClick={onRequest}
+      >
+        <AnimatePresence mode="wait" initial={false}>
+          <motion.span key={state} {...swap} className="inline-flex items-center gap-2">
+            {state === "done" && (
+              <>
+                <AnimatedCheck className="size-4" delay={0} /> Requested
+              </>
+            )}
+            {state === "busy" && (
+              <>
+                <span className="size-4 rounded-full border-2 border-current border-t-transparent motion-safe:animate-spin" />
+                Requesting...
+              </>
+            )}
+            {state === "idle" && (
+              <>
+                <HandHeart className="size-4" /> {label}
+              </>
+            )}
+          </motion.span>
+        </AnimatePresence>
       </Button>
     </>
   )
@@ -60,6 +89,7 @@ export default function DonationDetail() {
     isOwner ? donation.id : null
   )
   const [busy, setBusy] = useState(false)
+  const [requested, setRequested] = useState(false)
 
   const d = donation ? { ...donation, distanceKm: calcKm(origin, donation.location) } : null
   const myClaim = d ? myClaims.find((c) => c.donationId === d.id) : null
@@ -80,6 +110,8 @@ export default function DonationDetail() {
     if (myClaim) return navigate(`/requests/${myClaim.id}`)
     return run(async () => {
       await createClaim({ user, donation: d })
+      setRequested(true)
+      await new Promise((resolve) => setTimeout(resolve, 650))
       navigate("/requests")
     })
   }
@@ -162,7 +194,13 @@ export default function DonationDetail() {
                   <span>{Math.round(d.confidenceScore * 100)}%</span>
                 </div>
                 <div className="h-2 rounded-full bg-muted">
-                  <div className="h-2 rounded-full bg-primary" style={{ width: `${d.confidenceScore * 100}%` }} />
+                  <motion.div
+                    className="h-2 origin-left rounded-full bg-primary"
+                    style={{ width: `${d.confidenceScore * 100}%` }}
+                    initial={{ scaleX: 0 }}
+                    animate={{ scaleX: 1 }}
+                    transition={{ duration: 0.5, delay: 0.15, ease: EASE_OUT }}
+                  />
                 </div>
               </div>
               {lowConfidence && (
@@ -189,39 +227,62 @@ export default function DonationDetail() {
           {isOwner && (
             <section className="space-y-3 rounded-3xl border bg-card p-4 shadow-sm md:p-6">
               <h3 className="font-semibold">Requests ({incoming.length})</h3>
-              {incoming.length === 0 ? (
-                <p className="text-sm text-muted-foreground">No one has requested this yet.</p>
-              ) : (
-                incoming.map((c) => (
-                  <div key={c.id} className="flex items-center justify-between gap-3 rounded-2xl border p-3">
+              <AnimatePresence initial={false}>
+                {incoming.length === 0 && (
+                  <motion.p
+                    key="empty"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1, transition: { duration: DURATION.base, delay: DURATION.base } }}
+                    exit={{ opacity: 0, transition: { duration: 0 } }}
+                    className="text-sm text-muted-foreground"
+                  >
+                    No one has requested this yet.
+                  </motion.p>
+                )}
+                {incoming.map((c) => (
+                  <motion.div
+                    key={c.id}
+                    {...liveRow}
+                    className="flex items-center justify-between gap-3 rounded-2xl border p-3"
+                  >
                     <div className="min-w-0">
                       <p className="truncate text-sm font-semibold">{c.recipientName}</p>
                       <p className="text-xs text-muted-foreground">Requested {formatElapsed(c.requestedAt)}</p>
                     </div>
-                    {c.status === "Pending" && (
-                      <Button size="sm" disabled={busy} onClick={() => run(() => acceptClaim(c.id))}>
-                        Accept
-                      </Button>
-                    )}
-                    {c.status === "RequestAccepted" && (
-                      <Button size="sm" disabled={busy} onClick={() => run(() => completeClaim(c))}>
-                        Mark picked up
-                      </Button>
-                    )}
-                    {c.status === "Claimed" && (
-                      <span className={cn("rounded-full px-2.5 py-1 text-[11px] font-bold", CLAIM_PILL.Claimed)}>
-                        {CLAIM_LABELS.Claimed}
-                      </span>
-                    )}
-                  </div>
-                ))
-              )}
+                    <AnimatePresence mode="wait" initial={false}>
+                      <motion.div key={c.status} {...swap} className="shrink-0">
+                        {c.status === "Pending" && (
+                          <Button size="sm" disabled={busy} onClick={() => run(() => acceptClaim(c.id))}>
+                            Accept
+                          </Button>
+                        )}
+                        {c.status === "RequestAccepted" && (
+                          <Button size="sm" disabled={busy} onClick={() => run(() => completeClaim(c))}>
+                            Mark picked up
+                          </Button>
+                        )}
+                        {c.status === "Claimed" && (
+                          <span
+                            className={cn(
+                              "inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-bold",
+                              CLAIM_PILL.Claimed
+                            )}
+                          >
+                            <AnimatedCheck className="size-3" delay={0.05} />
+                            {CLAIM_LABELS.Claimed}
+                          </span>
+                        )}
+                      </motion.div>
+                    </AnimatePresence>
+                  </motion.div>
+                ))}
+              </AnimatePresence>
             </section>
           )}
 
           {!isOwner && (
             <div className="hidden gap-3 md:flex">
-              <Actions enabled={enabled} label={label} busy={busy} onRequest={handleRequest} />
+              <Actions enabled={enabled} label={label} busy={busy} done={requested} onRequest={handleRequest} />
             </div>
           )}
         </div>
@@ -229,7 +290,7 @@ export default function DonationDetail() {
 
       {!isOwner && (
         <div className="sticky bottom-0 flex gap-3 border-t bg-background/95 p-4 backdrop-blur md:hidden">
-          <Actions enabled={enabled} label={label} busy={busy} onRequest={handleRequest} />
+          <Actions enabled={enabled} label={label} busy={busy} done={requested} onRequest={handleRequest} />
         </div>
       )}
     </div>

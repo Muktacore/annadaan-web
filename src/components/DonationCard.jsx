@@ -4,13 +4,14 @@ import { MapPin, Clock } from "lucide-react"
 import CategoryIcon from "@/components/CategoryIcon"
 import FreshnessBadge from "@/components/FreshnessBadge"
 import { CATEGORY_LABELS, formatElapsed } from "@/lib/mockData"
+import { listItem, tween, DURATION } from "@/lib/motion"
 
 export default function DonationCard({ donation: d, index = 0 }) {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: index * 0.06 }}
+      {...listItem(index)}
+      whileTap={{ scale: 0.985 }}
+      transition={tween(DURATION.fast)}
     >
       <Link
         to={`/donation/${d.id}`}
@@ -25,7 +26,7 @@ export default function DonationCard({ donation: d, index = 0 }) {
         </div>
         <div className="min-w-0 flex-1 space-y-1">
           <p className="truncate font-semibold">
-            {CATEGORY_LABELS[d.foodCategory]} · {d.quantity} {d.quantity === 1 ? d.unit.replace(/s$/, "") : d.unit}
+            {CATEGORY_LABELS[d.foodCategory]} &middot; {d.quantity} {d.quantity === 1 ? d.unit.replace(/s$/, "") : d.unit}
           </p>
           <p className="truncate text-sm text-muted-foreground">{d.donorName}</p>
           <div className="flex items-center gap-3 text-xs text-muted-foreground">

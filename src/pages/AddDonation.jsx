@@ -1,7 +1,10 @@
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { useAuth } from "@/context/AuthContext"
-import { Camera, MapPin, Check } from "lucide-react"
+import { Camera, MapPin } from "lucide-react"
+import { motion } from "motion/react"
+import AnimatedCheck from "@/components/AnimatedCheck"
+import { tween, DURATION } from "@/lib/motion"
 import PageHeader from "@/components/PageHeader"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -96,10 +99,10 @@ export default function AddDonation() {
     return (
       <div className="flex min-h-dvh flex-col items-center justify-center gap-3 px-8 text-center">
         <div className="flex size-20 items-center justify-center rounded-full bg-primary text-primary-foreground">
-          <Check className="size-10" />
+          <AnimatedCheck className="size-10" />
         </div>
-        <h2 className="text-2xl font-bold">Donation posted</h2>
-        <p className="text-muted-foreground">Thank you. Nearby recipients can now see it.</p>
+        <motion.h2 initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0, transition: { ...tween(DURATION.slow), delay: 0.25 } }} className="text-2xl font-bold">Donation posted</motion.h2>
+        <motion.p initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0, transition: { ...tween(DURATION.slow), delay: 0.35 } }} className="text-muted-foreground">Thank you. Nearby recipients can now see it.</motion.p>
       </div>
     )
   }
