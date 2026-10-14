@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router-dom"
-import { Utensils, Leaf, Users, Plus, Sprout } from "lucide-react"
+import { Utensils, Leaf, HandHeart, Plus, Sprout } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import DonationCard from "@/components/DonationCard"
 import ThemeToggle from "@/components/ThemeToggle"
@@ -7,18 +7,19 @@ import { useAvailableDonations } from "@/hooks/useDonations"
 import { useUserLocation } from "@/hooks/useUserLocation"
 import { distanceKm as calcKm } from "@/lib/donations"
 import { useAuth } from "@/context/AuthContext"
-
-const STATS = [
-  { icon: Utensils, value: "128", label: "Meals shared" },
-  { icon: Leaf, value: "64 kg", label: "Food saved" },
-  { icon: Users, value: "23", label: "Donors nearby" },
-]
+import { useHomeStats } from "@/hooks/useHomeStats"
 
 export default function Home() {
   const navigate = useNavigate()
   const { user } = useAuth()
   const firstName = (user?.displayName || user?.email?.split("@")[0] || "Friend").split(" ")[0]
   const { donations, loading } = useAvailableDonations()
+  const { shared, mine } = useHomeStats(user?.uid)
+  const stats = [
+    { icon: Leaf, value: loading ? "-" : donations.length, label: "Available now" },
+    { icon: Utensils, value: shared ?? "-", label: "Shared so far" },
+    { icon: HandHeart, value: mine ?? "-", label: "Your donations" },
+  ]
   const origin = useUserLocation()
   const withDistance = donations.map((d) => ({ ...d, distanceKm: calcKm(origin, d.location) }))
   const nearby = withDistance
@@ -37,7 +38,7 @@ export default function Home() {
 
       <div className="grid gap-4 md:grid-cols-[1fr_1.2fr] md:gap-6">
         <div className="grid grid-cols-3 gap-3 md:gap-4">
-          {STATS.map(({ icon: Icon, value, label }) => (
+          {stats.map(({ icon: Icon, value, label }) => (
             <div key={label} className="flex flex-col items-center justify-center rounded-3xl border bg-card p-3 text-center shadow-sm md:p-5">
               <Icon className="size-5 text-primary md:size-7" />
               <p className="mt-2 text-lg font-bold md:text-2xl">{value}</p>
