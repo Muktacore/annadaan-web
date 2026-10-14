@@ -8,19 +8,12 @@ import { useUserLocation } from "@/hooks/useUserLocation"
 import { distanceKm as calcKm } from "@/lib/donations"
 import { useAuth } from "@/context/AuthContext"
 import { useHomeStats } from "@/hooks/useHomeStats"
-import { useHomeStats } from "@/hooks/useHomeStats"
 
 export default function Home() {
   const navigate = useNavigate()
   const { user } = useAuth()
   const firstName = (user?.displayName || user?.email?.split("@")[0] || "Friend").split(" ")[0]
   const { donations, loading } = useAvailableDonations()
-  const { shared, mine } = useHomeStats(user?.uid)
-  const stats = [
-    { icon: Leaf, value: loading ? "-" : donations.length, label: "Available now" },
-    { icon: Utensils, value: shared ?? "-", label: "Shared so far" },
-    { icon: HandHeart, value: mine ?? "-", label: "Your donations" },
-  ]
   const { shared, mine } = useHomeStats(user?.uid)
   const stats = [
     { icon: Leaf, value: loading ? "-" : donations.length, label: "Available now" },
