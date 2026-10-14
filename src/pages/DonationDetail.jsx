@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useParams, useNavigate, Link } from "react-router-dom"
 import { AnimatePresence, motion } from "motion/react"
 import { MapPin, Clock, Thermometer, Package, MessageCircle, HandHeart, Info, TriangleAlert } from "lucide-react"
@@ -42,8 +42,8 @@ function Actions({ enabled, label, busy, done, onRequest }) {
 
   return (
     <>
-      <Button variant="outline" size="lg" className="flex-1" onClick={() => alert("Chat comes later")}>
-        <MessageCircle /> Message
+      <Button variant="outline" size="lg" className="flex-1" disabled>
+        <MessageCircle /> Chat soon
       </Button>
       <Button
         size="lg"
@@ -90,6 +90,13 @@ export default function DonationDetail() {
   )
   const [busy, setBusy] = useState(false)
   const [requested, setRequested] = useState(false)
+  const [error, setError] = useState("")
+
+  useEffect(() => {
+    if (!error) return
+    const t = setTimeout(() => setError(""), 4000)
+    return () => clearTimeout(t)
+  }, [error])
 
   const d = donation ? { ...donation, distanceKm: calcKm(origin, donation.location) } : null
   const myClaim = d ? myClaims.find((c) => c.donationId === d.id) : null
@@ -100,7 +107,7 @@ export default function DonationDetail() {
       await fn()
     } catch (err) {
       console.error(err)
-      alert(err?.message || "Something went wrong")
+      setError(err?.message || "Something went wrong")
     } finally {
       setBusy(false)
     }
@@ -287,6 +294,19 @@ export default function DonationDetail() {
           )}
         </div>
       </div>
+
+      <AnimatePresence>
+        {error && (
+          <motion.div
+            key="error"
+            role="alert"
+            {...swap}
+            className="fixed inset-x-5 bottom-24 z-50 mx-auto max-w-sm rounded-2xl bg-foreground px-4 py-3 text-center text-sm font-medium text-background shadow-lg md:bottom-8"
+          >
+            {error}
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {!isOwner && (
         <div className="sticky bottom-0 flex gap-3 border-t bg-background/95 p-4 backdrop-blur md:hidden">
