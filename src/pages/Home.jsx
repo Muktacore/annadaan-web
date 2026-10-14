@@ -7,6 +7,11 @@ import { useAvailableDonations } from "@/hooks/useDonations"
 import { useUserLocation } from "@/hooks/useUserLocation"
 import { distanceKm as calcKm } from "@/lib/donations"
 import { useAuth } from "@/context/AuthContext"
+import { Companion, EmptyCompanion } from "@/components/characters/Companion"
+import { useGlance, useOnceAfter } from "@/components/characters/companionHooks"
+
+// glance from the (top-right) companion toward the main "Donate food" action
+const DONATE_GLANCE = [{ x: -0.7, y: 0.75 }]
 
 const STATS = [
   { icon: Utensils, value: "128", label: "Meals shared" },
@@ -19,6 +24,8 @@ export default function Home() {
   const { user } = useAuth()
   const firstName = (user?.displayName || user?.email?.split("@")[0] || "Friend").split(" ")[0]
   const { donations, loading } = useAvailableDonations()
+  const wave = useOnceAfter(900)
+  const glance = useGlance(DONATE_GLANCE, { delay: 3200, hold: 2000 })
   const origin = useUserLocation()
   const withDistance = donations.map((d) => ({ ...d, distanceKm: calcKm(origin, d.location) }))
   const nearby = withDistance
@@ -32,7 +39,16 @@ export default function Home() {
           <p className="text-sm text-muted-foreground">Namaste,</p>
           <h1 className="text-2xl font-extrabold md:text-4xl">{firstName} 👋</h1>
         </div>
-        <ThemeToggle className="md:hidden" />
+        <div className="flex items-start gap-3">
+          <ThemeToggle className="md:hidden" />
+          <Companion
+            role="food"
+            expression="encouraging"
+            wave={wave}
+            gaze={glance}
+            className="w-[clamp(76px,19vw,120px)]"
+          />
+        </div>
       </div>
 
       <div className="grid gap-4 md:grid-cols-[1fr_1.2fr] md:gap-6">
@@ -66,7 +82,10 @@ export default function Home() {
         <div className="grid gap-3 md:grid-cols-2 md:gap-4 xl:grid-cols-3">
           {loading && <p className="col-span-full text-sm text-muted-foreground">Loading donations...</p>}
           {!loading && nearby.length === 0 && (
-            <p className="col-span-full text-sm text-muted-foreground">No donations nearby yet. Be the first to donate!</p>
+            <div className="col-span-full flex flex-col items-center gap-3 rounded-3xl border border-dashed bg-card/60 px-5 py-8 text-center">
+              <EmptyCompanion prop="box" />
+              <p className="text-sm text-muted-foreground">No donations nearby yet. Be the first to donate!</p>
+            </div>
           )}
           {nearby.map((d, i) => (
             <DonationCard key={d.id} donation={d} index={i} />

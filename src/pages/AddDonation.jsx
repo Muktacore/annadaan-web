@@ -1,8 +1,10 @@
-import { useState } from "react"
+import { useRef, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { useAuth } from "@/context/AuthContext"
 import { Camera, MapPin, Check } from "lucide-react"
 import PageHeader from "@/components/PageHeader"
+import { Companion } from "@/components/characters/Companion"
+import { useFormReaction } from "@/components/characters/companionHooks"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -30,6 +32,26 @@ function SelectField({ label, value, onChange, options, placeholder = "Select" }
           ))}
         </SelectContent>
       </Select>
+    </div>
+  )
+}
+
+// Visual-only companion: reacts to the real form state, never controls it.
+function DonationCompanion({ saving, done, error }) {
+  const rootRef = useRef(null)
+  const reaction = useFormReaction(rootRef)
+  const expression = done ? "happy" : saving ? "encouraging" : error ? "concerned" : "attentive"
+  return (
+    <div ref={rootRef} className="flex items-center gap-4" aria-hidden="true">
+      <Companion
+        role="food"
+        expression={expression}
+        tilt={reaction}
+        className="w-[clamp(72px,20vw,104px)]"
+      />
+      <p className="text-sm leading-6 text-muted-foreground">
+        Tell us about the food you'd like to share.
+      </p>
     </div>
   )
 }
@@ -95,6 +117,7 @@ export default function AddDonation() {
   if (done) {
     return (
       <div className="flex min-h-dvh flex-col items-center justify-center gap-3 px-8 text-center">
+        <Companion role="food" expression="happy" className="w-24" />
         <div className="flex size-20 items-center justify-center rounded-full bg-primary text-primary-foreground">
           <Check className="size-10" />
         </div>
@@ -111,6 +134,8 @@ export default function AddDonation() {
         onSubmit={submit}
         className="space-y-5 px-5 pt-2 pb-10 md:mb-10 md:rounded-3xl md:border md:bg-card md:p-8 md:shadow-sm"
       >
+        <DonationCompanion saving={saving} done={false} error={Boolean(error)} />
+
         <label className="flex h-44 cursor-pointer flex-col items-center justify-center gap-2 overflow-hidden rounded-3xl border-2 border-dashed bg-card text-muted-foreground md:bg-background">
           {photo ? (
             <img src={photo.preview} alt="Food preview" className="h-full w-full object-cover" />

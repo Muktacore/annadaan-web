@@ -21,6 +21,7 @@ import {
 } from "lucide-react"
 
 import DonationCard from "@/components/DonationCard"
+import { EmptyCompanion } from "@/components/characters/Companion"
 import CategoryIcon from "@/components/CategoryIcon"
 import BaseFreshnessBadge from "@/components/FreshnessBadge"
 import { useAvailableDonations } from "@/hooks/useDonations"
@@ -79,7 +80,8 @@ export default function AvailableDonationsMap() {
     <div className="space-y-6 px-5 pt-8 pb-8 md:space-y-8 md:px-0 md:pt-10">
 
       {/* Heading */}
-      <div>
+      <div className="flex items-start justify-between gap-4">
+      <div className="min-w-0">
         <p className="flex items-center gap-2 text-sm font-medium text-[#52745A] dark:text-[#A4C5A4]">
           <Leaf className="size-4" />
           Food sharing around you
@@ -92,6 +94,7 @@ export default function AvailableDonationsMap() {
         <p className="mt-2 max-w-lg text-sm leading-6 text-muted-foreground md:text-base">
           Discover available food and connect with people sharing a little kindness.
         </p>
+      </div>
       </div>
 
       {/* Availability Banner */}
@@ -158,9 +161,7 @@ export default function AvailableDonationsMap() {
             </div>
           ) : (
             <div className="flex flex-col items-center gap-3 rounded-3xl border border-dashed border-[#D8DDCC] bg-[#F7F5ED] px-5 py-12 text-center dark:border-[#34483A] dark:bg-[#202C24]">
-              <div className="flex size-14 items-center justify-center rounded-2xl bg-[#E3EBD9] text-[#496D53] dark:bg-[#293D30] dark:text-[#A7C6A5]">
-                <HeartHandshake className="size-7" />
-              </div>
+              <EmptyCompanion prop="box" />
 
               <p className="font-semibold">No donations available right now</p>
 

@@ -2,6 +2,11 @@ import { useState } from "react"
 import { useParams, useNavigate, Link } from "react-router-dom"
 import { MapPin, Clock, Thermometer, Package, MessageCircle, HandHeart, Info, TriangleAlert } from "lucide-react"
 import PageHeader from "@/components/PageHeader"
+import { Companion } from "@/components/characters/Companion"
+import { useGlance, usePulse } from "@/components/characters/companionHooks"
+
+// glance toward the donation information after the page settles
+const INFO_GLANCE = [{ x: -0.6, y: 0.7 }]
 import CategoryIcon from "@/components/CategoryIcon"
 import FreshnessBadge from "@/components/FreshnessBadge"
 import { Button } from "@/components/ui/button"
@@ -34,13 +39,13 @@ function InfoTile({ icon: Icon, label, value }) {
   )
 }
 
-function Actions({ enabled, label, busy, onRequest }) {
+function Actions({ enabled, label, busy, onRequest, onAttend }) {
   return (
     <>
       <Button variant="outline" size="lg" className="flex-1" onClick={() => alert("Chat comes later")}>
         <MessageCircle /> Message
       </Button>
-      <Button size="lg" className="flex-1" disabled={!enabled || busy} onClick={onRequest}>
+      <Button size="lg" className="flex-1" disabled={!enabled || busy} onClick={onRequest} onPointerEnter={onAttend} onFocus={onAttend}>
         <HandHeart /> {label}
       </Button>
     </>
@@ -60,16 +65,23 @@ export default function DonationDetail() {
     isOwner ? donation.id : null
   )
   const [busy, setBusy] = useState(false)
+  const [failed, setFailed] = useState(false)
+  const [succeeded, setSucceeded] = useState(false)
+  const [attend, setAttend] = useState(0)
+  const glance = useGlance(INFO_GLANCE, { delay: 1800, hold: 1800 })
+  const attendPulse = usePulse(attend)
 
   const d = donation ? { ...donation, distanceKm: calcKm(origin, donation.location) } : null
   const myClaim = d ? myClaims.find((c) => c.donationId === d.id) : null
 
   const run = async (fn) => {
     setBusy(true)
+    setFailed(false)
     try {
       await fn()
     } catch (err) {
       console.error(err)
+      setFailed(true)
       alert(err?.message || "Something went wrong")
     } finally {
       setBusy(false)
@@ -80,6 +92,7 @@ export default function DonationDetail() {
     if (myClaim) return navigate(`/requests/${myClaim.id}`)
     return run(async () => {
       await createClaim({ user, donation: d })
+      setSucceeded(true)
       navigate("/requests")
     })
   }
@@ -88,7 +101,10 @@ export default function DonationDetail() {
     return (
       <div className="min-h-dvh">
         <PageHeader title="Donation" />
-        <p className="px-5 pt-6 text-muted-foreground">Loading...</p>
+        <div className="flex items-center gap-4 px-5 pt-6">
+          <Companion role="details" expression="relaxed" className="w-[72px]" />
+          <p className="text-muted-foreground">Loading...</p>
+        </div>
       </div>
     )
   }
@@ -97,9 +113,12 @@ export default function DonationDetail() {
     return (
       <div className="min-h-dvh">
         <PageHeader title="Donation" />
-        <p className="px-5 pt-6 text-muted-foreground">
-          Donation not found. <Link to="/home" className="text-primary underline">Go home</Link>
-        </p>
+        <div className="flex items-center gap-4 px-5 pt-6">
+          <Companion role="details" expression="concerned" className="w-[72px]" />
+          <p className="text-muted-foreground">
+            Donation not found. <Link to="/home" className="text-primary underline">Go home</Link>
+          </p>
+        </div>
       </div>
     )
   }
@@ -113,6 +132,16 @@ export default function DonationDetail() {
   return (
     <div className="flex min-h-dvh flex-col md:min-h-0">
       <PageHeader title="Donation details" />
+
+      <div className="px-5 pt-1 md:px-0">
+        <Companion
+          role="details"
+          expression={succeeded ? "happy" : failed ? "concerned" : busy ? "relaxed" : "attentive"}
+          gaze={glance}
+          tilt={attendPulse}
+          className="w-[clamp(64px,15vw,88px)]"
+        />
+      </div>
 
       <div className="grid flex-1 gap-5 px-5 pt-2 pb-6 md:grid-cols-2 md:gap-8 md:px-0">
         <div className="space-y-5">
@@ -221,7 +250,7 @@ export default function DonationDetail() {
 
           {!isOwner && (
             <div className="hidden gap-3 md:flex">
-              <Actions enabled={enabled} label={label} busy={busy} onRequest={handleRequest} />
+              <Actions enabled={enabled} label={label} busy={busy} onRequest={handleRequest} onAttend={() => setAttend((n) => n + 1)} />
             </div>
           )}
         </div>
@@ -229,7 +258,7 @@ export default function DonationDetail() {
 
       {!isOwner && (
         <div className="sticky bottom-0 flex gap-3 border-t bg-background/95 p-4 backdrop-blur md:hidden">
-          <Actions enabled={enabled} label={label} busy={busy} onRequest={handleRequest} />
+          <Actions enabled={enabled} label={label} busy={busy} onRequest={handleRequest} onAttend={() => setAttend((n) => n + 1)} />
         </div>
       )}
     </div>

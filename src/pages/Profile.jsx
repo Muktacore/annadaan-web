@@ -126,14 +126,16 @@ export default function Profile() {
 
         {/* Page Heading */}
         <header className="flex items-center justify-between gap-3">
-          <div>
-            <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#9A8065] dark:text-[#BBA58C]">
-              Your little corner
-            </p>
+          <div className="flex min-w-0 items-center gap-4">
+            <div className="min-w-0">
+              <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#9A8065] dark:text-[#BBA58C]">
+                Your little corner
+              </p>
 
-            <h1 className="mt-1 text-3xl font-bold text-[#344B36] dark:text-foreground sm:text-4xl">
-              My Profile
-            </h1>
+              <h1 className="mt-1 text-3xl font-bold text-[#344B36] dark:text-foreground sm:text-4xl">
+                My Profile
+              </h1>
+            </div>
           </div>
 
           <button
