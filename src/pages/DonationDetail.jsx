@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react"
 import { useParams, useNavigate, Link } from "react-router-dom"
 import { AnimatePresence, motion } from "motion/react"
-import { MapPin, Clock, Thermometer, Package, MessageCircle, HandHeart, Info, TriangleAlert } from "lucide-react"
+import { MapPin, Clock, Thermometer, Package, MessageCircle, HandHeart, Info, TriangleAlert, Trash2 } from "lucide-react"
 import PageHeader from "@/components/PageHeader"
 import CategoryIcon from "@/components/CategoryIcon"
 import FreshnessBadge from "@/components/FreshnessBadge"
@@ -14,7 +14,7 @@ import { useDonation } from "@/hooks/useDonations"
 import { useUserLocation } from "@/hooks/useUserLocation"
 import { useMyClaims, useDonationClaims } from "@/hooks/useClaims"
 import { distanceKm as calcKm } from "@/lib/donations"
-import { createClaim, acceptClaim, completeClaim, CLAIM_LABELS } from "@/lib/claims"
+import { createClaim, acceptClaim, completeClaim, deleteDonationWithClaims, CLAIM_LABELS } from "@/lib/claims"
 import { liveRow, swap, DURATION, EASE_OUT } from "@/lib/motion"
 import {
   CATEGORY_LABELS, STORAGE_LABELS, COVERED_LABELS, SOURCE_LABELS, formatElapsed,
@@ -91,6 +91,7 @@ export default function DonationDetail() {
   const [busy, setBusy] = useState(false)
   const [requested, setRequested] = useState(false)
   const [error, setError] = useState("")
+  const [confirmingDelete, setConfirmingDelete] = useState(false)
 
   useEffect(() => {
     if (!error) return
@@ -123,6 +124,12 @@ export default function DonationDetail() {
     })
   }
 
+  const handleDelete = () =>
+    run(async () => {
+      await deleteDonationWithClaims(d.id, incoming)
+      navigate("/home", { replace: true })
+    })
+
   if (loading) {
     return (
       <div className="min-h-dvh">
@@ -148,6 +155,7 @@ export default function DonationDetail() {
   const label = myClaim ? "View my request" : available ? "Request food" : "Unavailable"
   const hasFreshness = Boolean(d.freshnessLabel)
   const lowConfidence = hasFreshness && d.confidenceScore < 0.6
+  const blockDelete = d.status !== "available" || incoming.some((c) => c.status !== "Pending")
 
   return (
     <div className="flex min-h-dvh flex-col md:min-h-0">
@@ -285,6 +293,51 @@ export default function DonationDetail() {
                 ))}
               </AnimatePresence>
             </section>
+          )}
+
+          {isOwner && (
+            <div>
+              <AnimatePresence mode="wait" initial={false}>
+                {confirmingDelete ? (
+                  <motion.div
+                    key="confirm"
+                    {...swap}
+                    className="space-y-3 rounded-3xl border border-destructive/40 bg-card p-4"
+                  >
+                    <p className="text-sm font-semibold">Delete this donation?</p>
+                    <p className="text-xs text-muted-foreground">
+                      {incoming.length > 0
+                        ? `${incoming.length} pending request${incoming.length === 1 ? "" : "s"} will be removed too. This can't be undone.`
+                        : "This can't be undone."}
+                    </p>
+                    <div className="flex gap-3">
+                      <Button variant="outline" className="flex-1" disabled={busy} onClick={() => setConfirmingDelete(false)}>
+                        Keep it
+                      </Button>
+                      <Button variant="destructive" className="flex-1" disabled={busy} onClick={handleDelete}>
+                        {busy ? "Deleting..." : "Yes, delete"}
+                      </Button>
+                    </div>
+                  </motion.div>
+                ) : (
+                  <motion.div key="ask" {...swap}>
+                    <Button
+                      variant="outline"
+                      className="w-full text-destructive hover:text-destructive"
+                      disabled={blockDelete}
+                      onClick={() => setConfirmingDelete(true)}
+                    >
+                      <Trash2 /> Delete donation
+                    </Button>
+                    {blockDelete && (
+                      <p className="mt-2 text-center text-xs text-muted-foreground">
+                        This donation has an accepted request or was already picked up, so it can't be deleted.
+                      </p>
+                    )}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
           )}
 
           {!isOwner && (
