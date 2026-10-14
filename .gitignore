@@ -32,9 +32,3 @@ android/app/google-services.json
 !.env.example
 android/local.properties
 android/app/google-services.json
-
-.env.local
-.env.*
-!.env.example
-android/local.properties
-android/app/google-services.json

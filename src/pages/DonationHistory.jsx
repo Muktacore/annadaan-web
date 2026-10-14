@@ -1,5 +1,4 @@
 import PageHeader from "@/components/PageHeader"
-import { EmptyCompanion } from "@/components/characters/Companion"
 import { useMemo } from "react"
 import {
   ArrowDownLeft,
@@ -89,7 +88,9 @@ function HistoryRow({ item, type }) {
 function EmptyHistory({ received = false }) {
   return (
     <div className="flex flex-col items-center gap-3 rounded-3xl border border-dashed border-[#D8DDCC] bg-card/70 px-6 py-12 text-center dark:border-[#34483A]">
-      <EmptyCompanion prop={received ? "package" : "clipboard"} />
+      <div className="flex size-14 items-center justify-center rounded-2xl bg-[#E3EBD9] text-[#496D53] dark:bg-[#293D30] dark:text-[#A7C6A5]">
+        <History className="size-7" />
+      </div>
 
       <div>
         <p className="font-semibold">Nothing here yet</p>
@@ -169,8 +170,7 @@ function HistoryContent() {
     <div className="space-y-6 px-5 pt-2 pb-8 md:space-y-8 md:px-0 md:pt-4">
 
       {/* Page Heading */}
-      <div className="flex items-start justify-between gap-4">
-      <div className="min-w-0">
+      <div>
         <p className="flex items-center gap-2 text-sm font-medium text-[#52745A] dark:text-[#A4C5A4]">
           <History className="size-4" />
           Your impact
@@ -183,7 +183,6 @@ function HistoryContent() {
         <p className="mt-1 text-sm text-muted-foreground md:text-base">
           A record of the food shared and received through AnnaDaan.
         </p>
-      </div>
       </div>
 
       {/* Impact Summary */}

@@ -15,8 +15,6 @@ import {
 } from "lucide-react"
 
 import PageHeader from "@/components/PageHeader"
-import { EmptyCompanion } from "@/components/characters/Companion"
-
 import CategoryIcon from "@/components/CategoryIcon"
 import BaseFreshnessBadge from "@/components/FreshnessBadge"
 
@@ -119,7 +117,13 @@ function EmptyState({ label, history = false }) {
       <div className="absolute -right-8 -top-8 size-28 rounded-full bg-[#E9EBD9] dark:bg-[#344334]" />
       <div className="absolute -bottom-8 -left-8 size-24 rounded-full bg-[#F3E0D1] dark:bg-[#44332C]" />
 
-      <EmptyCompanion prop={history ? "package" : "clipboard"} className="relative" />
+      <div className="relative flex size-16 items-center justify-center rounded-2xl bg-[#E3EBD9] text-[#496D53] dark:bg-[#293D30] dark:text-[#A7C6A5]">
+        {history ? (
+          <History className="size-7" />
+        ) : (
+          <HeartHandshake className="size-7" />
+        )}
+      </div>
 
       <div className="relative">
         <p className="text-xl font-bold text-[#465640] dark:text-[#E8E9D9]">
@@ -144,8 +148,7 @@ export default function MyRequests() {
     <div className="space-y-6 px-5 pt-8 pb-8 md:space-y-8 md:px-0 md:pt-10">
 
       {/* Heading */}
-      <div className="flex items-start justify-between gap-4">
-      <div className="min-w-0">
+      <div>
         <p className="flex items-center gap-2 text-sm font-medium text-[#66805F] dark:text-[#A4C5A4]">
           <HeartHandshake className="size-4" />
           Your food journey
@@ -158,7 +161,6 @@ export default function MyRequests() {
         <p className="mt-2 max-w-lg text-sm leading-6 text-muted-foreground md:text-base">
           Keep track of the food you've requested and the meals coming your way.
         </p>
-      </div>
       </div>
 
       {/* Warm Summary Cards */}
