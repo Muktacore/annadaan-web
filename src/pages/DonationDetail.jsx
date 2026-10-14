@@ -97,13 +97,6 @@ export default function DonationDetail() {
     const t = setTimeout(() => setError(""), 4000)
     return () => clearTimeout(t)
   }, [error])
-  const [error, setError] = useState("")
-
-  useEffect(() => {
-    if (!error) return
-    const t = setTimeout(() => setError(""), 4000)
-    return () => clearTimeout(t)
-  }, [error])
 
   const d = donation ? { ...donation, distanceKm: calcKm(origin, donation.location) } : null
   const myClaim = d ? myClaims.find((c) => c.donationId === d.id) : null
@@ -301,19 +294,6 @@ export default function DonationDetail() {
           )}
         </div>
       </div>
-
-      <AnimatePresence>
-        {error && (
-          <motion.div
-            key="error"
-            role="alert"
-            {...swap}
-            className="fixed inset-x-5 bottom-24 z-50 mx-auto max-w-sm rounded-2xl bg-foreground px-4 py-3 text-center text-sm font-medium text-background shadow-lg md:bottom-8"
-          >
-            {error}
-          </motion.div>
-        )}
-      </AnimatePresence>
 
       <AnimatePresence>
         {error && (
