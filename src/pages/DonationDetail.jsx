@@ -6,6 +6,7 @@ import PageHeader from "@/components/PageHeader"
 import CategoryIcon from "@/components/CategoryIcon"
 import FreshnessBadge from "@/components/FreshnessBadge"
 import AnimatedCheck from "@/components/AnimatedCheck"
+import { DonationDetailSkeleton } from "@/components/Skeleton"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { cn } from "@/lib/utils"
@@ -132,9 +133,9 @@ export default function DonationDetail() {
 
   if (loading) {
     return (
-      <div className="min-h-dvh">
-        <PageHeader title="Donation" />
-        <p className="px-5 pt-6 text-muted-foreground">Loading...</p>
+      <div className="flex min-h-dvh flex-col md:min-h-0">
+        <PageHeader title="Donation details" />
+        <DonationDetailSkeleton />
       </div>
     )
   }
