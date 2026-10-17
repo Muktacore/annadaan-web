@@ -31,7 +31,7 @@ const norm = (value, allowed) => {
 
 const r2 = (x) => Math.round(x * 100) / 100
 
-function fmtHours(hours) {
+export function fmtHours(hours) {
   const mins = Math.max(0, Math.round(hours * 60))
   const h = Math.floor(mins / 60)
   const m = mins % 60
@@ -40,7 +40,7 @@ function fmtHours(hours) {
   return `${h} h ${m} min`
 }
 
-function dangerHours(elapsed, storage, temp, cfg) {
+export function dangerHours(elapsed, storage, temp, cfg) {
   if (temp !== null) {
     if (temp >= cfg.dangerHighC) return [0, "hot"]
     if (temp <= cfg.dangerLowC) return [Math.min(elapsed, cfg.assumedPreRefrigerationH), "cold"]
