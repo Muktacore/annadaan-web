@@ -1,0 +1,356 @@
+{
+  "checked_at": "2026-10-11T12:00:00+00:00",
+  "cases": [
+    {
+      "name": "fresh room covered",
+      "hours_ago": 1,
+      "storage_condition": "room_temp",
+      "is_covered": "covered",
+      "measured_temp_c": null,
+      "food_category": null,
+      "label": "safe",
+      "expected": {
+        "headline": "Looks safe",
+        "summary": "Safe for now: about 1 h left before it should be eaten or refrigerated.",
+        "reasons": [
+          "Cooked 1 h ago.",
+          "Stored at room temperature or unknown conditions, so it counts as danger-zone time."
+        ],
+        "advice": "Eat it or refrigerate it within about 1 h.",
+        "caveats": [
+          "No temperature was measured, so storage was taken as reported."
+        ],
+        "disclaimer": "Rule-based estimate from food-safety timing guidelines, not a lab test."
+      }
+    },
+    {
+      "name": "over 2h room covered",
+      "hours_ago": 3,
+      "storage_condition": "room_temp",
+      "is_covered": "covered",
+      "measured_temp_c": null,
+      "food_category": null,
+      "label": "consume_soon",
+      "expected": {
+        "headline": "Eat soon",
+        "summary": "Eat soon: about 3 h in the 5-60\u00b0C danger zone, past the 2 h point.",
+        "reasons": [
+          "Cooked 3 h ago.",
+          "Stored at room temperature or unknown conditions, so it counts as danger-zone time."
+        ],
+        "advice": "Refrigerate it or eat it immediately.",
+        "caveats": [
+          "No temperature was measured, so storage was taken as reported."
+        ],
+        "disclaimer": "Rule-based estimate from food-safety timing guidelines, not a lab test."
+      }
+    },
+    {
+      "name": "over 4h room covered",
+      "hours_ago": 5,
+      "storage_condition": "room_temp",
+      "is_covered": "covered",
+      "measured_temp_c": null,
+      "food_category": null,
+      "label": "unsafe",
+      "expected": {
+        "headline": "Not safe",
+        "summary": "Not safe to share: about 5 h in the 5-60\u00b0C danger zone, over the 4 h limit.",
+        "reasons": [
+          "Cooked 5 h ago.",
+          "Stored at room temperature or unknown conditions, so it counts as danger-zone time."
+        ],
+        "advice": "Do not eat or share this food. Discard it.",
+        "caveats": [
+          "No temperature was measured, so storage was taken as reported."
+        ],
+        "disclaimer": "Rule-based estimate from food-safety timing guidelines, not a lab test."
+      }
+    },
+    {
+      "name": "hot held 65C",
+      "hours_ago": 5,
+      "storage_condition": "kept_warm",
+      "is_covered": "covered",
+      "measured_temp_c": 65,
+      "food_category": null,
+      "label": "safe",
+      "expected": {
+        "headline": "Looks safe",
+        "summary": "Safe: it was kept hot or cold enough that no time limit has been reached.",
+        "reasons": [
+          "Cooked 5 h ago.",
+          "Held hot (measured 65\u00b0C), so the danger-zone clock did not run."
+        ],
+        "advice": "Keep it hot (60\u00b0C or above) until it is eaten.",
+        "caveats": [],
+        "disclaimer": "Rule-based estimate from food-safety timing guidelines, not a lab test."
+      }
+    },
+    {
+      "name": "cold 3C for 10h",
+      "hours_ago": 10,
+      "storage_condition": "refrigerated",
+      "is_covered": "covered",
+      "measured_temp_c": 3,
+      "food_category": null,
+      "label": "safe",
+      "expected": {
+        "headline": "Looks safe",
+        "summary": "Safe: it was kept hot or cold enough that no time limit has been reached.",
+        "reasons": [
+          "Cooked 10 h ago.",
+          "Kept cold (measured 3\u00b0C); about 1 h in the danger zone is assumed before chilling."
+        ],
+        "advice": "Keep it cold until it is eaten.",
+        "caveats": [],
+        "disclaimer": "Rule-based estimate from food-safety timing guidelines, not a lab test."
+      }
+    },
+    {
+      "name": "fridge not measured",
+      "hours_ago": 10,
+      "storage_condition": "refrigerated",
+      "is_covered": "covered",
+      "measured_temp_c": null,
+      "food_category": null,
+      "label": "safe",
+      "expected": {
+        "headline": "Looks safe",
+        "summary": "Safe: it was kept hot or cold enough that no time limit has been reached.",
+        "reasons": [
+          "Cooked 10 h ago.",
+          "Refrigerated but not measured; about 1 h in the danger zone is assumed before chilling."
+        ],
+        "advice": "Keep it cold until it is eaten.",
+        "caveats": [
+          "No temperature was measured, so storage was taken as reported."
+        ],
+        "disclaimer": "Rule-based estimate from food-safety timing guidelines, not a lab test."
+      }
+    },
+    {
+      "name": "uncovered 1.5h",
+      "hours_ago": 1.5,
+      "storage_condition": "room_temp",
+      "is_covered": "uncovered",
+      "measured_temp_c": null,
+      "food_category": null,
+      "label": "consume_soon",
+      "expected": {
+        "headline": "Eat soon",
+        "summary": "Eat soon: it was left uncovered while in the danger zone, which raises contamination risk.",
+        "reasons": [
+          "Cooked 1 h 30 min ago.",
+          "Stored at room temperature or unknown conditions, so it counts as danger-zone time.",
+          "It was uncovered, which raises contamination risk."
+        ],
+        "advice": "Cover it and eat it soon.",
+        "caveats": [
+          "No temperature was measured, so storage was taken as reported."
+        ],
+        "disclaimer": "Rule-based estimate from food-safety timing guidelines, not a lab test."
+      }
+    },
+    {
+      "name": "kept warm unverified",
+      "hours_ago": 3,
+      "storage_condition": "kept_warm",
+      "is_covered": "covered",
+      "measured_temp_c": null,
+      "food_category": null,
+      "label": "consume_soon",
+      "expected": {
+        "headline": "Eat soon",
+        "summary": "Eat soon: about 3 h in the 5-60\u00b0C danger zone, past the 2 h point.",
+        "reasons": [
+          "Cooked 3 h ago.",
+          "Kept warm, but 60\u00b0C or above could not be verified, so it counts as danger-zone time."
+        ],
+        "advice": "Refrigerate it or eat it immediately.",
+        "caveats": [
+          "No temperature was measured, so storage was taken as reported."
+        ],
+        "disclaimer": "Rule-based estimate from food-safety timing guidelines, not a lab test."
+      }
+    },
+    {
+      "name": "age limit when cold",
+      "hours_ago": 30,
+      "storage_condition": "refrigerated",
+      "is_covered": "covered",
+      "measured_temp_c": 3,
+      "food_category": null,
+      "label": "unsafe",
+      "expected": {
+        "headline": "Not safe",
+        "summary": "Not safe to share: cooked 30 h ago, past the 24 h limit for donated food.",
+        "reasons": [
+          "Cooked 30 h ago.",
+          "Kept cold (measured 3\u00b0C); about 1 h in the danger zone is assumed before chilling."
+        ],
+        "advice": "Do not eat or share this food. Discard it.",
+        "caveats": [],
+        "disclaimer": "Rule-based estimate from food-safety timing guidelines, not a lab test."
+      }
+    },
+    {
+      "name": "age limit and danger",
+      "hours_ago": 30,
+      "storage_condition": "room_temp",
+      "is_covered": "covered",
+      "measured_temp_c": null,
+      "food_category": null,
+      "label": "unsafe",
+      "expected": {
+        "headline": "Not safe",
+        "summary": "Not safe to share: about 30 h in the 5-60\u00b0C danger zone, over the 4 h limit.",
+        "reasons": [
+          "Cooked 30 h ago.",
+          "Stored at room temperature or unknown conditions, so it counts as danger-zone time.",
+          "Also past the 24 h limit for donated food."
+        ],
+        "advice": "Do not eat or share this food. Discard it.",
+        "caveats": [
+          "No temperature was measured, so storage was taken as reported."
+        ],
+        "disclaimer": "Rule-based estimate from food-safety timing guidelines, not a lab test."
+      }
+    },
+    {
+      "name": "rice over 4h",
+      "hours_ago": 5,
+      "storage_condition": "room_temp",
+      "is_covered": "covered",
+      "measured_temp_c": null,
+      "food_category": "rice",
+      "label": "unsafe",
+      "expected": {
+        "headline": "Not safe",
+        "summary": "Not safe to share: about 5 h in the 5-60\u00b0C danger zone, over the 4 h limit.",
+        "reasons": [
+          "Cooked 5 h ago.",
+          "Stored at room temperature or unknown conditions, so it counts as danger-zone time.",
+          "Cooked rice can carry Bacillus cereus, whose toxin reheating does not destroy."
+        ],
+        "advice": "Do not eat or share this food. Discard it.",
+        "caveats": [
+          "No temperature was measured, so storage was taken as reported."
+        ],
+        "disclaimer": "Rule-based estimate from food-safety timing guidelines, not a lab test."
+      }
+    },
+    {
+      "name": "unknown storage and cover",
+      "hours_ago": 3,
+      "storage_condition": "unknown",
+      "is_covered": "unknown",
+      "measured_temp_c": null,
+      "food_category": null,
+      "label": "consume_soon",
+      "expected": {
+        "headline": "Eat soon",
+        "summary": "Eat soon: about 3 h in the 5-60\u00b0C danger zone, past the 2 h point.",
+        "reasons": [
+          "Cooked 3 h ago.",
+          "Stored at room temperature or unknown conditions, so it counts as danger-zone time."
+        ],
+        "advice": "Refrigerate it or eat it immediately.",
+        "caveats": [
+          "No temperature was measured, so storage was taken as reported.",
+          "Storage conditions were unknown or changed, so the cautious room-temperature rule was used.",
+          "Covered status is unknown."
+        ],
+        "disclaimer": "Rule-based estimate from food-safety timing guidelines, not a lab test."
+      }
+    },
+    {
+      "name": "near 2h limit",
+      "hours_ago": 1.9,
+      "storage_condition": "room_temp",
+      "is_covered": "covered",
+      "measured_temp_c": null,
+      "food_category": null,
+      "label": "safe",
+      "expected": {
+        "headline": "Looks safe",
+        "summary": "Safe for now: about 6 min left before it should be eaten or refrigerated.",
+        "reasons": [
+          "Cooked 1 h 54 min ago.",
+          "Stored at room temperature or unknown conditions, so it counts as danger-zone time."
+        ],
+        "advice": "Eat it or refrigerate it within about 6 min.",
+        "caveats": [
+          "No temperature was measured, so storage was taken as reported.",
+          "Close to a time limit, so treat it with extra caution."
+        ],
+        "disclaimer": "Rule-based estimate from food-safety timing guidelines, not a lab test."
+      }
+    },
+    {
+      "name": "partly covered",
+      "hours_ago": 1,
+      "storage_condition": "room_temp",
+      "is_covered": "partial",
+      "measured_temp_c": null,
+      "food_category": null,
+      "label": "safe",
+      "expected": {
+        "headline": "Looks safe",
+        "summary": "Safe for now: about 1 h left before it should be eaten or refrigerated.",
+        "reasons": [
+          "Cooked 1 h ago.",
+          "Stored at room temperature or unknown conditions, so it counts as danger-zone time.",
+          "It was only partly covered."
+        ],
+        "advice": "Eat it or refrigerate it within about 1 h.",
+        "caveats": [
+          "No temperature was measured, so storage was taken as reported."
+        ],
+        "disclaimer": "Rule-based estimate from food-safety timing guidelines, not a lab test."
+      }
+    },
+    {
+      "name": "measured 30C slow cooling",
+      "hours_ago": 3,
+      "storage_condition": "room_temp",
+      "is_covered": "covered",
+      "measured_temp_c": 30,
+      "food_category": null,
+      "label": "consume_soon",
+      "expected": {
+        "headline": "Eat soon",
+        "summary": "Eat soon: about 3 h in the 5-60\u00b0C danger zone, past the 2 h point.",
+        "reasons": [
+          "Cooked 3 h ago.",
+          "Measured 30\u00b0C, inside the 5-60\u00b0C danger zone.",
+          "Cooling is slower than the FSSAI guideline."
+        ],
+        "advice": "Refrigerate it or eat it immediately.",
+        "caveats": [],
+        "disclaimer": "Rule-based estimate from food-safety timing guidelines, not a lab test."
+      }
+    },
+    {
+      "name": "fridge not cold 30C",
+      "hours_ago": 3,
+      "storage_condition": "refrigerated",
+      "is_covered": "covered",
+      "measured_temp_c": 30,
+      "food_category": null,
+      "label": "consume_soon",
+      "expected": {
+        "headline": "Eat soon",
+        "summary": "Eat soon: about 3 h in the 5-60\u00b0C danger zone, past the 2 h point.",
+        "reasons": [
+          "Cooked 3 h ago.",
+          "Measured 30\u00b0C, inside the 5-60\u00b0C danger zone.",
+          "Cooling is slower than the FSSAI guideline."
+        ],
+        "advice": "Refrigerate it or eat it immediately.",
+        "caveats": [],
+        "disclaimer": "Rule-based estimate from food-safety timing guidelines, not a lab test."
+      }
+    }
+  ]
+}
