@@ -10,12 +10,14 @@ import { useUserLocation } from "@/hooks/useUserLocation"
 import { distanceKm as calcKm } from "@/lib/donations"
 import { useAuth } from "@/context/AuthContext"
 import { useHomeStats } from "@/hooks/useHomeStats"
+import { useMinLoading } from "@/hooks/useMinLoading"
 
 export default function Home() {
   const navigate = useNavigate()
   const { user } = useAuth()
   const firstName = (user?.displayName || user?.email?.split("@")[0] || "Friend").split(" ")[0]
-  const { donations, loading } = useAvailableDonations()
+  const { donations, loading: dataLoading } = useAvailableDonations()
+  const loading = useMinLoading(dataLoading)
   const { shared, mine } = useHomeStats(user?.uid)
   const stats = [
     { icon: Leaf, value: loading ? null : donations.length, label: "Available now" },

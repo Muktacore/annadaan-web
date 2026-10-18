@@ -12,6 +12,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { cn } from "@/lib/utils"
 import { useAuth } from "@/context/AuthContext"
 import { useDonation } from "@/hooks/useDonations"
+import { useMinLoading } from "@/hooks/useMinLoading"
 import { useUserLocation } from "@/hooks/useUserLocation"
 import { useMyClaims, useDonationClaims } from "@/hooks/useClaims"
 import { distanceKm as calcKm } from "@/lib/donations"
@@ -81,7 +82,8 @@ export default function DonationDetail() {
   const { id } = useParams()
   const navigate = useNavigate()
   const { user } = useAuth()
-  const { donation, loading } = useDonation(id)
+  const { donation, loading: dataLoading } = useDonation(id)
+  const loading = useMinLoading(dataLoading)
   const origin = useUserLocation()
   const { claims: myClaims } = useMyClaims(user?.uid)
   const isOwner = Boolean(donation && user && donation.donorId === user.uid)
