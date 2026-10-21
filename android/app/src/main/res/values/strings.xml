@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">AnnaDaan</string>
+    <string name="title_activity_main">AnnaDaan</string>
+    <string name="package_name">com.annadaan.app</string>
+    <string name="custom_url_scheme">com.annadaan.app</string>
+</resources>
