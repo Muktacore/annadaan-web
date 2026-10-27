@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 // Shared motion tokens for AnnaDaan. Everything animated in the app should pull
 // its timing from here so the whole product moves the same way.
 //
@@ -64,18 +63,12 @@ export const fade = {
   animate: { opacity: 1 },
   exit: { opacity: 0 },
   transition: tween(DURATION.fast),
-=======
-// ─────────────────────────────────────────────────────────────
-// AnnaDaan motion tokens — the single source of truth for timing.
-// Every animation in the app should pull from here so the whole
-// product "feels" consistent (same easing, same speed, same weight).
-//
-// Rule of thumb:  small UI feedback  → 0.15s
-//                 elements entering   → 0.3 – 0.4s
-//                 whole-page moves    → 0.3s max
-// ─────────────────────────────────────────────────────────────
+}
 
-export const EASE_OUT = [0.22, 1, 0.36, 1] // soft, confident deceleration
+// ---------------------------------------------------------------------------
+// Mukta's tokens (character / page-transition / reveal work). Kept as-is so
+// her components keep working; both sets live in this one file.
+// ---------------------------------------------------------------------------
 
 export const DUR = { fast: 0.15, base: 0.3, slow: 0.5 }
 
@@ -108,5 +101,4 @@ export const staggerItem = {
 export const popIn = {
   hidden: { opacity: 0, scale: 0.8 },
   visible: { opacity: 1, scale: 1, transition: SPRING_BOUNCY },
->>>>>>> mukta-on-main
 }

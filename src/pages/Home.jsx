@@ -10,6 +10,7 @@ import DonationCardSkeleton from "@/components/DonationCardSkeleton"
 import ThemeToggle from "@/components/ThemeToggle"
 import { useAvailableDonations } from "@/hooks/useDonations"
 import { useUserLocation } from "@/hooks/useUserLocation"
+import { useMinLoading } from "@/hooks/useMinLoading"
 import { useCommunityStats } from "@/hooks/useCommunityStats"
 import { distanceKm as calcKm } from "@/lib/donations"
 import { useAuth } from "@/context/AuthContext"
@@ -59,7 +60,8 @@ export default function Home() {
     user?.displayName || user?.email?.split("@")[0] || "Friend"
   ).split(" ")[0]
 
-  const { donations, loading, error } = useAvailableDonations()
+  const { donations, loading: dataLoading, error } = useAvailableDonations()
+  const loading = useMinLoading(dataLoading)
   const origin = useUserLocation()
   const { stats: community } = useCommunityStats()
 
