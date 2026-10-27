@@ -4,7 +4,7 @@ import { AnimatePresence, motion } from "motion/react"
 import { toast } from "sonner"
 import {
   MapPin, Clock, Thermometer, Package, MessageCircle, HandHeart, Info, TriangleAlert, Trash2,
-  ChevronDown, Lightbulb,
+  ChevronDown, Lightbulb, Users, Minus, Plus,
 } from "lucide-react"
 import PageHeader from "@/components/PageHeader"
 import CategoryIcon from "@/components/CategoryIcon"
@@ -35,6 +35,15 @@ const CLAIM_PILL = {
   RequestAccepted: "bg-sage/30 text-foreground",
   Claimed: "bg-primary text-primary-foreground",
 }
+
+// Request priority (urgency heuristic). Brand colors only, never the freshness colors.
+const PRIORITY_PILL = {
+  high: "bg-primary text-primary-foreground",
+  medium: "bg-sage/30 text-foreground",
+  standard: "bg-muted text-muted-foreground",
+}
+const PRIORITY_LABEL = { high: "High priority", medium: "Medium", standard: "Standard" }
+const MAX_PEOPLE = 10
 
 // The explanation templates may hand back strings or small objects, and a
 // field may be one string or a list. Normalise so the UI never crashes.
@@ -128,6 +137,7 @@ export default function DonationDetail() {
   const [requested, setRequested] = useState(false)
   const [confirmingDelete, setConfirmingDelete] = useState(false)
   const [showMore, setShowMore] = useState(false)
+  const [people, setPeople] = useState(1)
 
   const d = donation ? { ...donation, distanceKm: calcKm(origin, donation.location) } : null
   const myClaim = d ? myClaims.find((c) => c.donationId === d.id) : null
@@ -148,7 +158,7 @@ export default function DonationDetail() {
   const handleRequest = () => {
     if (myClaim) return navigate(`/requests/${myClaim.id}`)
     return run(async () => {
-      await createClaim({ user, donation: d })
+      await createClaim({ user, donation: d, peopleToFeed: people })
       setRequested(true)
       await new Promise((resolve) => setTimeout(resolve, 650))
       navigate("/requests")
@@ -194,6 +204,11 @@ export default function DonationDetail() {
   const blockDelete = d.status !== "available" || incoming.some((c) => c.status !== "Pending")
   const explained = hasFreshness ? safeExplain(d) : null
   const hasMore = Boolean(explained && (explained.caveats.length > 0 || explained.disclaimer))
+  // Most needy first (urgency score), ties by who asked first; old requests without a score go last.
+  const ranked = [...incoming].sort(
+    (a, b) => (b.urgencyScore ?? -1) - (a.urgencyScore ?? -1) || a.requestedAt - b.requestedAt
+  )
+  const hasScores = ranked.some((c) => typeof c.urgencyScore === "number")
 
   return (
     <div className="flex min-h-dvh flex-col md:min-h-0">
@@ -361,6 +376,11 @@ export default function DonationDetail() {
           {isOwner && (
             <Reveal as="section" delay={0.18} className="space-y-3 rounded-3xl border bg-card p-4 shadow-sm md:p-6">
               <h3 className="font-semibold">Requests ({incoming.length})</h3>
+              {hasScores && ranked.length > 1 && (
+                <p className="text-xs text-muted-foreground">
+                  Most in need first, by people to feed, food time left and distance. Self-reported, not verified.
+                </p>
+              )}
               <AnimatePresence initial={false}>
                 {incoming.length === 0 && (
                   <motion.p
@@ -373,15 +393,30 @@ export default function DonationDetail() {
                     No one has requested this yet.
                   </motion.p>
                 )}
-                {incoming.map((c) => (
+                {ranked.map((c) => (
                   <motion.div
                     key={c.id}
                     {...liveRow}
                     className="flex items-center justify-between gap-3 rounded-2xl border p-3"
                   >
-                    <div className="min-w-0">
-                      <p className="truncate text-sm font-semibold">{c.recipientName}</p>
+                    <div className="min-w-0 space-y-1">
+                      <div className="flex items-center gap-2">
+                        <p className="truncate text-sm font-semibold">{c.recipientName}</p>
+                        {typeof c.urgencyScore === "number" && (
+                          <span
+                            className={cn(
+                              "shrink-0 rounded-full px-2 py-0.5 text-[10px] font-bold",
+                              PRIORITY_PILL[c.urgencyBand] ?? PRIORITY_PILL.standard
+                            )}
+                          >
+                            {PRIORITY_LABEL[c.urgencyBand] ?? PRIORITY_LABEL.standard} &middot; {c.urgencyScore}
+                          </span>
+                        )}
+                      </div>
                       <p className="text-xs text-muted-foreground">Requested {formatElapsed(c.requestedAt)}</p>
+                      {Array.isArray(c.urgencyReasons) && c.urgencyReasons.length > 0 && (
+                        <p className="text-xs text-muted-foreground">{c.urgencyReasons.join(" ")}</p>
+                      )}
                     </div>
                     <AnimatePresence mode="wait" initial={false}>
                       <motion.div key={c.status} {...swap} className="shrink-0">
@@ -457,6 +492,40 @@ export default function DonationDetail() {
                 )}
               </AnimatePresence>
             </div>
+          )}
+
+          {!isOwner && available && !myClaim && !requested && (
+            <Reveal delay={0.2} className="flex items-center justify-between gap-3 rounded-3xl border bg-card p-4">
+              <div className="min-w-0">
+                <p className="flex items-center gap-1.5 text-sm font-semibold">
+                  <Users className="size-4 text-primary" /> How many people will this feed?
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  Helps the donor see who needs it most. Self-reported, not verified.
+                </p>
+              </div>
+              <div className="flex shrink-0 items-center gap-2">
+                <button
+                  type="button"
+                  aria-label="Fewer people"
+                  disabled={busy || people <= 1}
+                  onClick={() => setPeople((n) => Math.max(1, n - 1))}
+                  className="inline-flex size-8 items-center justify-center rounded-full border bg-card disabled:opacity-40"
+                >
+                  <Minus className="size-4" />
+                </button>
+                <span className="w-6 text-center font-semibold tabular-nums" aria-live="polite">{people}</span>
+                <button
+                  type="button"
+                  aria-label="More people"
+                  disabled={busy || people >= MAX_PEOPLE}
+                  onClick={() => setPeople((n) => Math.min(MAX_PEOPLE, n + 1))}
+                  className="inline-flex size-8 items-center justify-center rounded-full border bg-card disabled:opacity-40"
+                >
+                  <Plus className="size-4" />
+                </button>
+              </div>
+            </Reveal>
           )}
 
           {!isOwner && (

@@ -3,6 +3,7 @@ import {
   onSnapshot, query, where, serverTimestamp,
 } from "firebase/firestore"
 import { db } from "@/lib/firebase"
+import { urgencyForRequest } from "@/lib/urgency"
 
 export const CLAIM_LABELS = {
   Pending: "Pending",
@@ -23,9 +24,16 @@ export function normalizeClaim(snap) {
 }
 
 // One claim per recipient per donation (deterministic id prevents duplicates).
-export async function createClaim({ user, donation }) {
+// peopleToFeed is self-reported by the recipient (not verified). The urgency
+// score is a transparent heuristic (src/lib/urgency.js), stored with its reasons
+// so the donor can see why a request is ranked where it is.
+export async function createClaim({ user, donation, peopleToFeed = 1 }) {
   if (donation.donorId === user.uid) throw new Error("You cannot request your own donation")
   const id = `${donation.id}_${user.uid}`
+  const people = Math.min(10, Math.max(1, Math.trunc(Number(peopleToFeed)) || 1))
+  const rawKm = donation.distanceKm
+  const distanceKm = rawKm != null && Number.isFinite(Number(rawKm)) ? Number(rawKm) : null
+  const urgency = urgencyForRequest({ donation, distanceKm, peopleToFeed: people })
   await setDoc(doc(db, "claims", id), {
     claimId: id,
     donationId: donation.id,
@@ -38,7 +46,11 @@ export async function createClaim({ user, donation }) {
     unit: donation.unit,
     foodPhotoUrl: donation.foodPhotoUrl ?? null,
     status: "Pending",
-    urgencyScore: null,
+    peopleToFeed: people,
+    distanceKm,
+    urgencyScore: urgency.urgencyScore,
+    urgencyBand: urgency.urgencyBand,
+    urgencyReasons: urgency.urgencyReasons,
     requestedAt: serverTimestamp(),
     updatedAt: serverTimestamp(),
   })
