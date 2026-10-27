@@ -11,6 +11,7 @@ import {
   Leaf,
   Info,
   CircleHelp,
+  TrendingUp,
 } from "lucide-react"
 
 import { cn } from "@/lib/utils"
@@ -101,6 +102,7 @@ export default function Sidebar() {
         <NavItem to="/map" icon={MapPin} label="Map" />
         <NavItem to="/requests" icon={HandHeart} label="My requests" />
         <NavItem to="/history" icon={History} label="Donation history" />
+        <NavItem to="/insights" icon={TrendingUp} label="Forecast insights" />
         <NavItem to="/profile" icon={User} label="Profile" />
         <NavItem to="/about" icon={Info} label="About" />
         <NavItem to="/help" icon={CircleHelp} label="Help" />

@@ -11,6 +11,7 @@ import AvailableDonationsMap from "@/pages/AvailableDonationsMap"
 import MyRequests, { RequestDetail } from "@/pages/MyRequests"
 import DonationHistory from "@/pages/DonationHistory"
 import Profile from "@/pages/Profile"
+import Insights from "@/pages/Insights"
 import InfoLayout from "@/layouts/InfoLayout"
 import About from "@/pages/info/About"
 import Help from "@/pages/info/Help"
@@ -41,6 +42,7 @@ export default function App() {
           <Route path="/requests/:id" element={<RequestDetail />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/history" element={<DonationHistory />} />
+          <Route path="/insights" element={<Insights />} />
           <Route path="/donate" element={<AddDonation />} />
           <Route path="/donation/:id" element={<DonationDetail />} />
         </Route>
