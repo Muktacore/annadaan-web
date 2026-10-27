@@ -1,11 +1,15 @@
 import { useState, useEffect } from "react"
 import { useParams, useNavigate, Link } from "react-router-dom"
 import { AnimatePresence, motion } from "motion/react"
-import { MapPin, Clock, Thermometer, Package, MessageCircle, HandHeart, Info, TriangleAlert, Trash2 } from "lucide-react"
+import {
+  MapPin, Clock, Thermometer, Package, MessageCircle, HandHeart, Info, TriangleAlert, Trash2,
+  ChevronDown, Lightbulb,
+} from "lucide-react"
 import PageHeader from "@/components/PageHeader"
 import CategoryIcon from "@/components/CategoryIcon"
 import FreshnessBadge from "@/components/FreshnessBadge"
 import AnimatedCheck from "@/components/AnimatedCheck"
+import ConfidenceRing from "@/components/ConfidenceRing"
 import { DonationDetailSkeleton } from "@/components/Skeleton"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
@@ -16,8 +20,9 @@ import { useMinLoading } from "@/hooks/useMinLoading"
 import { useUserLocation } from "@/hooks/useUserLocation"
 import { useMyClaims, useDonationClaims } from "@/hooks/useClaims"
 import { distanceKm as calcKm } from "@/lib/donations"
+import { explainDonation } from "@/lib/freshnessExplain"
 import { createClaim, acceptClaim, completeClaim, deleteDonationWithClaims, CLAIM_LABELS } from "@/lib/claims"
-import { liveRow, swap, DURATION, EASE_OUT } from "@/lib/motion"
+import { liveRow, swap, fade, tween, DURATION, STAGGER } from "@/lib/motion"
 import {
   CATEGORY_LABELS, STORAGE_LABELS, COVERED_LABELS, SOURCE_LABELS, formatElapsed,
 } from "@/lib/mockData"
@@ -26,6 +31,31 @@ const CLAIM_PILL = {
   Pending: "bg-muted text-muted-foreground",
   RequestAccepted: "bg-sage/30 text-foreground",
   Claimed: "bg-primary text-primary-foreground",
+}
+
+// The explanation templates may hand back strings or small objects, and a
+// field may be one string or a list. Normalise so the UI never crashes.
+const lineText = (x) =>
+  typeof x === "string" ? x : x?.text ?? x?.message ?? x?.label ?? ""
+const toLines = (v) =>
+  (Array.isArray(v) ? v : v ? [v] : []).map(lineText).filter(Boolean)
+
+function safeExplain(d) {
+  try {
+    const e = explainDonation(d)
+    if (!e || !e.headline) return null
+    return {
+      headline: lineText(e.headline),
+      summary: lineText(e.summary),
+      reasons: toLines(e.reasons),
+      advice: toLines(e.advice),
+      caveats: toLines(e.caveats),
+      disclaimer: lineText(e.disclaimer),
+    }
+  } catch (err) {
+    console.error(err)
+    return null
+  }
 }
 
 function InfoTile({ icon: Icon, label, value }) {
@@ -95,6 +125,7 @@ export default function DonationDetail() {
   const [requested, setRequested] = useState(false)
   const [error, setError] = useState("")
   const [confirmingDelete, setConfirmingDelete] = useState(false)
+  const [showMore, setShowMore] = useState(false)
 
   useEffect(() => {
     if (!error) return
@@ -159,6 +190,8 @@ export default function DonationDetail() {
   const hasFreshness = Boolean(d.freshnessLabel)
   const lowConfidence = hasFreshness && d.confidenceScore < 0.6
   const blockDelete = d.status !== "available" || incoming.some((c) => c.status !== "Pending")
+  const explained = hasFreshness ? safeExplain(d) : null
+  const hasMore = Boolean(explained && (explained.caveats.length > 0 || explained.disclaimer))
 
   return (
     <div className="flex min-h-dvh flex-col md:min-h-0">
@@ -204,36 +237,112 @@ export default function DonationDetail() {
           </div>
 
           {hasFreshness ? (
-            <section className="space-y-3 rounded-3xl border bg-card p-4 shadow-sm md:p-6">
+            <section className="space-y-4 rounded-3xl border bg-card p-4 shadow-sm md:p-6">
               <h3 className="font-semibold">Freshness check</h3>
-              <div>
-                <div className="mb-1 flex justify-between text-xs text-muted-foreground">
-                  <span>Confidence</span>
-                  <span>{Math.round(d.confidenceScore * 100)}%</span>
-                </div>
-                <div className="h-2 rounded-full bg-muted">
-                  <motion.div
-                    className="h-2 origin-left rounded-full bg-primary"
-                    style={{ width: `${d.confidenceScore * 100}%` }}
-                    initial={{ scaleX: 0 }}
-                    animate={{ scaleX: 1 }}
-                    transition={{ duration: 0.5, delay: 0.15, ease: EASE_OUT }}
-                  />
+
+              <div className="flex items-center gap-4">
+                <ConfidenceRing value={d.confidenceScore} />
+                <div className="min-w-0 space-y-1">
+                  {explained ? (
+                    <>
+                      <p className="font-semibold leading-snug">{explained.headline}</p>
+                      {explained.summary && (
+                        <p className="text-sm text-muted-foreground">{explained.summary}</p>
+                      )}
+                    </>
+                  ) : (
+                    <p className="text-sm text-muted-foreground">Confidence in this check</p>
+                  )}
                 </div>
               </div>
+
               {lowConfidence && (
                 <p className="flex items-start gap-2 rounded-2xl bg-status-soon-soft p-3 text-xs text-status-soon">
                   <TriangleAlert className="mt-0.5 size-4 shrink-0" />
                   Low confidence. Please check the food yourself before eating.
                 </p>
               )}
-              <ul className="space-y-2">
-                {(d.explanation ?? []).map((line) => (
-                  <li key={line} className="flex items-start gap-2 text-sm">
-                    <Info className="mt-0.5 size-4 shrink-0 text-primary" /> {line}
-                  </li>
-                ))}
-              </ul>
+
+              {explained ? (
+                <>
+                  {explained.reasons.length > 0 && (
+                    <ul className="space-y-2">
+                      {explained.reasons.map((line, i) => (
+                        <motion.li
+                          key={`${i}-${line}`}
+                          initial={{ opacity: 0, y: 6 }}
+                          animate={{
+                            opacity: 1,
+                            y: 0,
+                            transition: { ...tween(DURATION.base), delay: 0.55 + Math.min(i, 6) * STAGGER * 1.5 },
+                          }}
+                          className="flex items-start gap-2 text-sm"
+                        >
+                          <Info className="mt-0.5 size-4 shrink-0 text-primary" /> {line}
+                        </motion.li>
+                      ))}
+                    </ul>
+                  )}
+
+                  {explained.advice.length > 0 && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 6 }}
+                      animate={{
+                        opacity: 1,
+                        y: 0,
+                        transition: { ...tween(DURATION.base), delay: 0.65 + Math.min(explained.reasons.length, 6) * STAGGER * 1.5 },
+                      }}
+                      className="flex items-start gap-2 rounded-2xl bg-secondary p-3 text-sm"
+                    >
+                      <Lightbulb className="mt-0.5 size-4 shrink-0 text-primary" />
+                      <div className="space-y-1">
+                        {explained.advice.map((line, i) => (
+                          <p key={`${i}-${line}`}>{line}</p>
+                        ))}
+                      </div>
+                    </motion.div>
+                  )}
+
+                  {hasMore && (
+                    <div>
+                      <button
+                        type="button"
+                        aria-expanded={showMore}
+                        onClick={() => setShowMore((v) => !v)}
+                        className="flex w-full items-center justify-between rounded-xl py-1 text-xs font-medium text-muted-foreground"
+                      >
+                        Details and caveats
+                        <motion.span animate={{ rotate: showMore ? 180 : 0 }} transition={tween(DURATION.fast)}>
+                          <ChevronDown className="size-4" />
+                        </motion.span>
+                      </button>
+                      <AnimatePresence initial={false}>
+                        {showMore && (
+                          <motion.div key="more" {...fade} className="mt-2 space-y-2 text-xs text-muted-foreground">
+                            {explained.caveats.length > 0 && (
+                              <ul className="list-disc space-y-1 pl-4">
+                                {explained.caveats.map((line, i) => (
+                                  <li key={`${i}-${line}`}>{line}</li>
+                                ))}
+                              </ul>
+                            )}
+                            {explained.disclaimer && <p>{explained.disclaimer}</p>}
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </div>
+                  )}
+                </>
+              ) : (
+                <ul className="space-y-2">
+                  {(d.explanation ?? []).map((line) => (
+                    <li key={line} className="flex items-start gap-2 text-sm">
+                      <Info className="mt-0.5 size-4 shrink-0 text-primary" /> {line}
+                    </li>
+                  ))}
+                </ul>
+              )}
+
               <p className="text-xs text-muted-foreground">Checked by: {SOURCE_LABELS[d.freshnessSource]}</p>
             </section>
           ) : (
