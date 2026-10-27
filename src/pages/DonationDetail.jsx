@@ -1,10 +1,16 @@
 import { useState, useEffect } from "react"
 import { useParams, useNavigate, Link } from "react-router-dom"
+<<<<<<< HEAD
 import { AnimatePresence, motion } from "motion/react"
 import {
   MapPin, Clock, Thermometer, Package, MessageCircle, HandHeart, Info, TriangleAlert, Trash2,
   ChevronDown, Lightbulb,
 } from "lucide-react"
+=======
+import { MapPin, Clock, Thermometer, Package, MessageCircle, HandHeart, Info, TriangleAlert, Loader2 } from "lucide-react"
+import { motion } from "motion/react"
+import { toast } from "sonner"
+>>>>>>> mukta-on-main
 import PageHeader from "@/components/PageHeader"
 import CategoryIcon from "@/components/CategoryIcon"
 import FreshnessBadge from "@/components/FreshnessBadge"
@@ -13,6 +19,10 @@ import ConfidenceRing from "@/components/ConfidenceRing"
 import { DonationDetailSkeleton } from "@/components/Skeleton"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+import { Skeleton } from "@/components/ui/skeleton"
+import FoodBoxCharacter from "@/components/FoodBoxCharacter"
+import { Reveal, Stagger, StaggerItem } from "@/components/motion/Reveal"
+import { EASE_OUT, SPRING_SOFT } from "@/lib/motion"
 import { cn } from "@/lib/utils"
 import { useAuth } from "@/context/AuthContext"
 import { useDonation } from "@/hooks/useDonations"
@@ -60,12 +70,12 @@ function safeExplain(d) {
 
 function InfoTile({ icon: Icon, label, value }) {
   return (
-    <div className="rounded-2xl border bg-card p-3">
+    <StaggerItem className="rounded-2xl border bg-card p-3 transition-colors hover:border-primary/30">
       <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
         <Icon className="size-3.5" /> {label}
       </div>
       <p className="mt-1 text-sm font-semibold">{value}</p>
-    </div>
+    </StaggerItem>
   )
 }
 
@@ -74,6 +84,7 @@ function Actions({ enabled, label, busy, done, onRequest }) {
 
   return (
     <>
+<<<<<<< HEAD
       <Button variant="outline" size="lg" className="flex-1" disabled>
         <MessageCircle /> Chat soon
       </Button>
@@ -103,6 +114,13 @@ function Actions({ enabled, label, busy, done, onRequest }) {
             )}
           </motion.span>
         </AnimatePresence>
+=======
+      <Button variant="outline" size="lg" className="flex-1" onClick={() => toast("Chat is coming soon", { description: "For now, request the food and the donor will see it." })}>
+        <MessageCircle /> Message
+      </Button>
+      <Button size="lg" className="flex-1" disabled={!enabled || busy} onClick={onRequest}>
+        {busy ? <Loader2 className="animate-spin" /> : <HandHeart />} {label}
+>>>>>>> mukta-on-main
       </Button>
     </>
   )
@@ -136,13 +154,18 @@ export default function DonationDetail() {
   const d = donation ? { ...donation, distanceKm: calcKm(origin, donation.location) } : null
   const myClaim = d ? myClaims.find((c) => c.donationId === d.id) : null
 
-  const run = async (fn) => {
+  const run = async (fn, successMsg) => {
     setBusy(true)
     try {
       await fn()
+      if (successMsg) toast.success(successMsg)
     } catch (err) {
       console.error(err)
+<<<<<<< HEAD
       setError(err?.message || "Something went wrong")
+=======
+      toast.error(err?.message || "Something went wrong")
+>>>>>>> mukta-on-main
     } finally {
       setBusy(false)
     }
@@ -155,7 +178,7 @@ export default function DonationDetail() {
       setRequested(true)
       await new Promise((resolve) => setTimeout(resolve, 650))
       navigate("/requests")
-    })
+    }, "Request sent")
   }
 
   const handleDelete = () =>
@@ -166,9 +189,30 @@ export default function DonationDetail() {
 
   if (loading) {
     return (
+<<<<<<< HEAD
       <div className="flex min-h-dvh flex-col md:min-h-0">
         <PageHeader title="Donation details" />
         <DonationDetailSkeleton />
+=======
+      <div className="min-h-dvh md:min-h-0" role="status" aria-label="Loading donation">
+        <PageHeader title="Donation details" />
+        <div className="grid gap-5 px-5 pt-2 pb-6 md:grid-cols-2 md:gap-8 md:px-0">
+          <div className="space-y-5">
+            <Skeleton className="h-44 rounded-3xl md:h-72" />
+            <div className="grid grid-cols-2 gap-3">
+              {Array.from({ length: 4 }, (_, i) => <Skeleton key={i} className="h-16 rounded-2xl" />)}
+            </div>
+            <Skeleton className="h-20 rounded-3xl" />
+          </div>
+          <div className="space-y-5">
+            <div className="space-y-2">
+              <Skeleton className="h-7 w-2/3" />
+              <Skeleton className="h-4 w-1/4" />
+            </div>
+            <Skeleton className="h-44 rounded-3xl" />
+          </div>
+        </div>
+>>>>>>> mukta-on-main
       </div>
     )
   }
@@ -177,9 +221,14 @@ export default function DonationDetail() {
     return (
       <div className="min-h-dvh">
         <PageHeader title="Donation" />
-        <p className="px-5 pt-6 text-muted-foreground">
-          Donation not found. <Link to="/home" className="text-primary underline">Go home</Link>
-        </p>
+        <Reveal className="flex flex-col items-center gap-2 px-5 pt-10 text-center">
+          <FoodBoxCharacter type="squashed" className="w-36!" />
+          <p className="font-semibold">Donation not found</p>
+          <p className="text-sm text-muted-foreground">
+            It may have been claimed or removed.{" "}
+            <Link to="/home" className="text-primary underline">Go home</Link>
+          </p>
+        </Reveal>
       </div>
     )
   }
@@ -199,22 +248,27 @@ export default function DonationDetail() {
 
       <div className="grid flex-1 gap-5 px-5 pt-2 pb-6 md:grid-cols-2 md:gap-8 md:px-0">
         <div className="space-y-5">
-          <div className="flex h-44 items-center justify-center rounded-3xl bg-secondary text-primary md:h-72">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.96 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.45, ease: EASE_OUT }}
+            className="flex h-44 items-center justify-center overflow-hidden rounded-3xl bg-secondary text-primary md:h-72"
+          >
             {d.foodPhotoUrl ? (
               <img src={d.foodPhotoUrl} alt="Donated food" className="size-full rounded-3xl object-cover" />
             ) : (
               <CategoryIcon category={d.foodCategory} className="size-20 md:size-28" />
             )}
-          </div>
+          </motion.div>
 
-          <div className="grid grid-cols-2 gap-3">
+          <Stagger delay={0.1} className="grid grid-cols-2 gap-3">
             <InfoTile icon={Clock} label="Cooked" value={d.cookedAt ? formatElapsed(d.cookedAt) : "-"} />
             <InfoTile icon={Thermometer} label="Storage" value={STORAGE_LABELS[d.storageCondition]} />
             <InfoTile icon={Package} label="Cover" value={COVERED_LABELS[d.isCovered]} />
             <InfoTile icon={MapPin} label="Distance" value={d.distanceKm != null ? `${d.distanceKm} km away` : "-"} />
-          </div>
+          </Stagger>
 
-          <div className="flex items-center gap-3 rounded-3xl border bg-card p-4">
+          <Reveal delay={0.3} className="flex items-center gap-3 rounded-3xl border bg-card p-4">
             <Avatar>
               <AvatarFallback className="bg-secondary text-primary">{d.donorName?.[0]}</AvatarFallback>
             </Avatar>
@@ -222,11 +276,11 @@ export default function DonationDetail() {
               <p className="font-semibold">{d.donorName}</p>
               <p className="text-xs text-muted-foreground">{isOwner ? "You (donor)" : "Donor"}</p>
             </div>
-          </div>
+          </Reveal>
         </div>
 
         <div className="space-y-5">
-          <div className="flex items-start justify-between gap-3">
+          <Reveal delay={0.05} className="flex items-start justify-between gap-3">
             <div>
               <h2 className="text-xl font-bold md:text-3xl">{CATEGORY_LABELS[d.foodCategory]}</h2>
               <p className="text-sm text-muted-foreground">
@@ -234,9 +288,10 @@ export default function DonationDetail() {
               </p>
             </div>
             {d.freshnessLabel && <FreshnessBadge label={d.freshnessLabel} />}
-          </div>
+          </Reveal>
 
           {hasFreshness ? (
+<<<<<<< HEAD
             <section className="space-y-4 rounded-3xl border bg-card p-4 shadow-sm md:p-6">
               <h3 className="font-semibold">Freshness check</h3>
 
@@ -253,6 +308,23 @@ export default function DonationDetail() {
                   ) : (
                     <p className="text-sm text-muted-foreground">Confidence in this check</p>
                   )}
+=======
+            <Reveal as="section" delay={0.12} className="space-y-3 rounded-3xl border bg-card p-4 shadow-sm md:p-6">
+              <h3 className="font-semibold">Freshness check</h3>
+              <div>
+                <div className="mb-1 flex justify-between text-xs text-muted-foreground">
+                  <span>Confidence</span>
+                  <span>{Math.round(d.confidenceScore * 100)}%</span>
+                </div>
+                {/* The fill slides in with transform (not width) so it stays smooth on phones. */}
+                <div className="h-2 overflow-hidden rounded-full bg-muted">
+                  <motion.div
+                    className="h-2 w-full rounded-full bg-primary"
+                    initial={{ x: "-100%" }}
+                    animate={{ x: `${-(1 - (Number(d.confidenceScore) || 0)) * 100}%` }}
+                    transition={{ duration: 0.9, delay: 0.35, ease: EASE_OUT }}
+                  />
+>>>>>>> mukta-on-main
                 </div>
               </div>
 
@@ -344,16 +416,17 @@ export default function DonationDetail() {
               )}
 
               <p className="text-xs text-muted-foreground">Checked by: {SOURCE_LABELS[d.freshnessSource]}</p>
-            </section>
+            </Reveal>
           ) : (
-            <section className="rounded-3xl border bg-card p-4 text-sm text-muted-foreground shadow-sm md:p-6">
+            <Reveal as="section" delay={0.12} className="rounded-3xl border bg-card p-4 text-sm text-muted-foreground shadow-sm md:p-6">
               Freshness check pending. The safety check runs once the donation is analysed.
-            </section>
+            </Reveal>
           )}
 
           {isOwner && (
-            <section className="space-y-3 rounded-3xl border bg-card p-4 shadow-sm md:p-6">
+            <Reveal as="section" delay={0.18} className="space-y-3 rounded-3xl border bg-card p-4 shadow-sm md:p-6">
               <h3 className="font-semibold">Requests ({incoming.length})</h3>
+<<<<<<< HEAD
               <AnimatePresence initial={false}>
                 {incoming.length === 0 && (
                   <motion.p
@@ -370,12 +443,25 @@ export default function DonationDetail() {
                   <motion.div
                     key={c.id}
                     {...liveRow}
+=======
+              {incoming.length === 0 ? (
+                <p className="text-sm text-muted-foreground">No one has requested this yet.</p>
+              ) : (
+                incoming.map((c) => (
+                  <motion.div
+                    key={c.id}
+                    layout
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={SPRING_SOFT}
+>>>>>>> mukta-on-main
                     className="flex items-center justify-between gap-3 rounded-2xl border p-3"
                   >
                     <div className="min-w-0">
                       <p className="truncate text-sm font-semibold">{c.recipientName}</p>
                       <p className="text-xs text-muted-foreground">Requested {formatElapsed(c.requestedAt)}</p>
                     </div>
+<<<<<<< HEAD
                     <AnimatePresence mode="wait" initial={false}>
                       <motion.div key={c.status} {...swap} className="shrink-0">
                         {c.status === "Pending" && (
@@ -405,6 +491,29 @@ export default function DonationDetail() {
                 ))}
               </AnimatePresence>
             </section>
+=======
+                    {c.status === "Pending" && (
+                      <Button size="sm" disabled={busy} onClick={() => run(() => acceptClaim(c.id), "Request accepted")}>
+                        {busy && <Loader2 className="animate-spin" />}
+                        Accept
+                      </Button>
+                    )}
+                    {c.status === "RequestAccepted" && (
+                      <Button size="sm" disabled={busy} onClick={() => run(() => completeClaim(c), "Marked as picked up")}>
+                        {busy && <Loader2 className="animate-spin" />}
+                        Mark picked up
+                      </Button>
+                    )}
+                    {c.status === "Claimed" && (
+                      <span className={cn("rounded-full px-2.5 py-1 text-[11px] font-bold", CLAIM_PILL.Claimed)}>
+                        {CLAIM_LABELS.Claimed}
+                      </span>
+                    )}
+                  </motion.div>
+                ))
+              )}
+            </Reveal>
+>>>>>>> mukta-on-main
           )}
 
           {isOwner && (
@@ -453,9 +562,15 @@ export default function DonationDetail() {
           )}
 
           {!isOwner && (
+<<<<<<< HEAD
             <div className="hidden gap-3 md:flex">
               <Actions enabled={enabled} label={label} busy={busy} done={requested} onRequest={handleRequest} />
             </div>
+=======
+            <Reveal delay={0.22} className="hidden gap-3 md:flex">
+              <Actions enabled={enabled} label={label} busy={busy} onRequest={handleRequest} />
+            </Reveal>
+>>>>>>> mukta-on-main
           )}
         </div>
       </div>
@@ -474,9 +589,20 @@ export default function DonationDetail() {
       </AnimatePresence>
 
       {!isOwner && (
+<<<<<<< HEAD
         <div className="sticky bottom-0 flex gap-3 border-t bg-background/95 p-4 backdrop-blur md:hidden">
           <Actions enabled={enabled} label={label} busy={busy} done={requested} onRequest={handleRequest} />
         </div>
+=======
+        <motion.div
+          initial={{ y: 40, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.4, delay: 0.25, ease: EASE_OUT }}
+          className="sticky bottom-0 flex gap-3 border-t bg-background/95 p-4 backdrop-blur md:hidden"
+        >
+          <Actions enabled={enabled} label={label} busy={busy} onRequest={handleRequest} />
+        </motion.div>
+>>>>>>> mukta-on-main
       )}
     </div>
   )

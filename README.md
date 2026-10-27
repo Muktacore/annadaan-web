@@ -1,16 +1,24 @@
-# React + Vite
+# Anna Daan
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A React + Vite food donation app. Authentication and donation data use Firebase; optional donation-photo uploads use Cloudinary.
 
-Currently, two official plugins are available:
+## Run the web app
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+1. Install Node.js 20.19+ (or 22.12+) and npm.
+2. Copy `.env.example` to `.env` and fill in the Firebase web-app values from **Firebase Console → Project settings → Your apps**.
+3. Set `VITE_FIREBASE_WEB_CLIENT_ID` to the Google OAuth web client ID used by Firebase Authentication. Enable the Google provider in Firebase Authentication if you want Google sign-in.
+4. To use donation photo uploads, also fill in the two Cloudinary settings in `.env`; otherwise leave them blank.
+5. Install dependencies and start the app:
 
-## React Compiler
+   ```sh
+   npm ci
+   npm run dev
+   ```
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+The development server prints its local URL. For a production build, run `npm run build`; to preview it, run `npm run preview`.
 
-## Expanding the ESLint configuration
+The app now handles unavailable or invalid Firebase configuration with an in-app setup screen instead of a blank runtime crash. It does not bypass authentication or substitute mock data for live donations.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Android Firebase setup
+
+The original Android project is included. For native Android builds, provide your own `android/app/google-services.json` from the same Firebase project. That configuration file is intentionally not included in this ZIP.
