@@ -1,5 +1,5 @@
 import PageHeader from "@/components/PageHeader"
-import { useMemo } from "react"
+import { useMemo, useState } from "react"
 import {
   ArrowDownLeft,
   ArrowUpRight,
@@ -11,7 +11,11 @@ import {
 } from "lucide-react"
 
 import CategoryIcon from "@/components/CategoryIcon"
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
+import SlidingTab from "@/components/SlidingTab"
+import CountUp from "@/components/motion/CountUp"
+import { Reveal, Stagger, StaggerItem } from "@/components/motion/Reveal"
+import DonationCardSkeleton from "@/components/DonationCardSkeleton"
+import { Tabs, TabsList, TabsContent } from "@/components/ui/tabs"
 import { cn } from "@/lib/utils"
 
 import { CATEGORY_LABELS } from "@/lib/mockData"
@@ -26,7 +30,7 @@ function HistoryRow({ item, type }) {
   return (
     <article
       className={cn(
-        "flex items-center gap-3 rounded-3xl border bg-card p-4 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md",
+        "flex items-center gap-3 rounded-3xl border bg-card p-4 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md active:translate-y-0 active:scale-[0.985]",
         isExpired
           ? "border-border"
           : "border-[#D8DDCC] hover:border-[#91A98D]"
@@ -85,6 +89,16 @@ function HistoryRow({ item, type }) {
   )
 }
 
+function SkeletonRows() {
+  return (
+    <div className="space-y-3">
+      {[0, 1, 2].map((i) => (
+        <DonationCardSkeleton key={i} />
+      ))}
+    </div>
+  )
+}
+
 function EmptyHistory({ received = false }) {
   return (
     <div className="flex flex-col items-center gap-3 rounded-3xl border border-dashed border-[#D8DDCC] bg-card/70 px-6 py-12 text-center dark:border-[#34483A]">
@@ -116,8 +130,9 @@ export default function DonationHistory() {
 
 function HistoryContent() {
   const { user } = useAuth()
-  const { donations: myDonations } = useMyDonations(user?.uid)
-  const { claims } = useMyClaims(user?.uid)
+  const { donations: myDonations, loading: donationsLoading } = useMyDonations(user?.uid)
+  const { claims, loading: claimsLoading } = useMyClaims(user?.uid)
+  const [tab, setTab] = useState("donated")
   const receivedHistory = useMemo(
     () =>
       claims
@@ -167,10 +182,10 @@ function HistoryContent() {
   )
 
   return (
-    <div className="space-y-6 px-5 pt-2 pb-8 md:space-y-8 md:px-0 md:pt-4">
+    <Stagger className="space-y-6 px-5 pt-2 pb-8 md:space-y-8 md:px-0 md:pt-4">
 
       {/* Page Heading */}
-      <div>
+      <StaggerItem>
         <p className="flex items-center gap-2 text-sm font-medium text-[#52745A] dark:text-[#A4C5A4]">
           <History className="size-4" />
           Your impact
@@ -183,19 +198,19 @@ function HistoryContent() {
         <p className="mt-1 text-sm text-muted-foreground md:text-base">
           A record of the food shared and received through AnnaDaan.
         </p>
-      </div>
+      </StaggerItem>
 
       {/* Impact Summary */}
-      <div className="grid grid-cols-2 gap-3 md:max-w-lg md:gap-4">
+      <StaggerItem className="grid grid-cols-2 gap-3 md:max-w-lg md:gap-4">
 
         {/* Terracotta Card */}
-        <div className="rounded-3xl border border-[#E5CCB8] bg-[#F3E3D5] p-4 shadow-sm transition-transform duration-200 hover:-translate-y-1 dark:border-[#614638] dark:bg-[#382C25] md:p-5">
+        <div className="rounded-3xl border border-[#E5CCB8] bg-[#F3E3D5] p-4 shadow-sm transition-transform duration-200 hover:-translate-y-1 active:translate-y-0 active:scale-[0.985] dark:border-[#614638] dark:bg-[#382C25] md:p-5">
           <div className="flex size-10 items-center justify-center rounded-2xl bg-[#E5C5AB] text-[#79533D] dark:bg-[#574033] dark:text-[#E5B997]">
             <ArrowUpRight className="size-5" />
           </div>
 
           <p className="mt-3 text-2xl font-extrabold text-[#704A32] dark:text-[#F0C5A2]">
-            {donatedCount}
+            <CountUp value={donatedCount} />
           </p>
 
           <p className="text-xs text-[#87684F] dark:text-[#C9AD96] md:text-sm">
@@ -204,13 +219,13 @@ function HistoryContent() {
         </div>
 
         {/* Sage Card */}
-        <div className="rounded-3xl border border-[#D2DDC7] bg-[#E5EDDC] p-4 shadow-sm transition-transform duration-200 hover:-translate-y-1 dark:border-[#3C5742] dark:bg-[#293B2F] md:p-5">
+        <div className="rounded-3xl border border-[#D2DDC7] bg-[#E5EDDC] p-4 shadow-sm transition-transform duration-200 hover:-translate-y-1 active:translate-y-0 active:scale-[0.985] dark:border-[#3C5742] dark:bg-[#293B2F] md:p-5">
           <div className="flex size-10 items-center justify-center rounded-2xl bg-[#CBDCC1] text-[#496D53] dark:bg-[#3A5742] dark:text-[#B1D1AA]">
             <Leaf className="size-5" />
           </div>
 
           <p className="mt-3 text-2xl font-extrabold text-[#315D45] dark:text-[#B7D9B3]">
-            {totalShared}
+            <CountUp value={totalShared} />
           </p>
 
           <p className="text-xs text-[#617D62] dark:text-[#A6C0A3] md:text-sm">
@@ -218,70 +233,86 @@ function HistoryContent() {
           </p>
         </div>
 
-      </div>
+      </StaggerItem>
 
       {/* History Tabs */}
-      <Tabs defaultValue="donated">
+      <StaggerItem>
+      <Tabs value={tab} onValueChange={setTab}>
 
         <TabsList className="grid w-full grid-cols-2 rounded-2xl bg-[#E9E3D6] p-1 dark:bg-[#29352D] md:max-w-md">
 
-          <TabsTrigger
+          <SlidingTab
             value="donated"
-            className="gap-2 rounded-xl transition-colors data-[state=active]:bg-[#496D53] data-[state=active]:text-white data-[state=active]:shadow-sm dark:data-[state=active]:bg-[#6B9675] dark:data-[state=active]:text-[#142319]"
+            active={tab === "donated"}
+            layoutId="history-tab-pill"
+            pillClassName="bg-[#496D53] dark:bg-[#6B9675]"
           >
             <ArrowUpRight className="size-4" />
             Donated ({donatedCount})
-          </TabsTrigger>
+          </SlidingTab>
 
-          <TabsTrigger
+          <SlidingTab
             value="received"
-            className="gap-2 rounded-xl transition-colors data-[state=active]:bg-[#496D53] data-[state=active]:text-white data-[state=active]:shadow-sm dark:data-[state=active]:bg-[#6B9675] dark:data-[state=active]:text-[#142319]"
+            active={tab === "received"}
+            layoutId="history-tab-pill"
+            pillClassName="bg-[#496D53] dark:bg-[#6B9675]"
           >
             <ArrowDownLeft className="size-4" />
             Received ({receivedCount})
-          </TabsTrigger>
+          </SlidingTab>
 
         </TabsList>
 
         {/* Donated History */}
-        <TabsContent value="donated" className="mt-4 space-y-3">
-          {donatedHistory.length ? (
-            donatedHistory.map((item) => (
-              <HistoryRow
-                key={item.id}
-                item={item}
-                type="donated"
-              />
-            ))
+        <TabsContent value="donated" className="mt-4">
+          {donationsLoading ? (
+            <SkeletonRows />
+          ) : donatedHistory.length ? (
+            <Stagger className="space-y-3" stagger={0.05}>
+              {donatedHistory.map((item) => (
+                <StaggerItem key={item.id}>
+                  <HistoryRow item={item} type="donated" />
+                </StaggerItem>
+              ))}
+            </Stagger>
           ) : (
-            <EmptyHistory />
+            <Reveal>
+              <EmptyHistory />
+            </Reveal>
           )}
         </TabsContent>
 
         {/* Received History */}
-        <TabsContent value="received" className="mt-4 space-y-3">
-          {receivedHistory.length ? (
-            receivedHistory.map((item) => (
-              <HistoryRow
-                key={item.id}
-                item={item}
-                type="received"
-              />
-            ))
+        <TabsContent value="received" className="mt-4">
+          {claimsLoading ? (
+            <SkeletonRows />
+          ) : receivedHistory.length ? (
+            <Stagger className="space-y-3" stagger={0.05}>
+              {receivedHistory.map((item) => (
+                <StaggerItem key={item.id}>
+                  <HistoryRow item={item} type="received" />
+                </StaggerItem>
+              ))}
+            </Stagger>
           ) : (
-            <EmptyHistory received />
+            <Reveal>
+              <EmptyHistory received />
+            </Reveal>
           )}
         </TabsContent>
 
       </Tabs>
+      </StaggerItem>
 
       {/* Footer Note */}
-      <p className="flex items-start gap-2 text-xs leading-relaxed text-muted-foreground">
-        <PackageCheck className="mt-0.5 size-4 shrink-0 text-primary" />
-        History is live from your account. Food you receive appears here once
-        the donor confirms pickup.
-      </p>
+      <StaggerItem>
+        <p className="flex items-start gap-2 text-xs leading-relaxed text-muted-foreground">
+          <PackageCheck className="mt-0.5 size-4 shrink-0 text-primary" />
+          History is live from your account. Food you receive appears here once
+          the donor confirms pickup.
+        </p>
+      </StaggerItem>
 
-    </div>
+    </Stagger>
   )
 }

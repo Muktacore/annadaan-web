@@ -1,0 +1,84 @@
+/*
+  Bowl steam — thin, organic wisps rising from the food artwork.
+  Only transform + opacity are animated (GPU friendly, no layout work).
+  The overlay is sized in % of its positioned parent, so it stays on the
+  bowl at any width.
+*/
+
+.bowl-steam {
+  position: absolute;
+  /* Sits over the food (rice/bread), not over the bowl rim or leaves */
+  left: 41%;
+  width: 38%;
+  top: 2%;
+  height: 44%;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.bowl-steam__wisp {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  opacity: 0;
+  will-change: transform, opacity;
+  animation-name: bowl-steam-rise;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+}
+
+/* Each wisp: own length of life, own phase, own sideways drift */
+.bowl-steam__wisp--a {
+  stroke-width: 3.6;
+  --steam-dx: 7px;
+  --steam-peak: 0.8;
+  animation-duration: 7.5s;
+  animation-delay: -1s;
+}
+
+.bowl-steam__wisp--b {
+  stroke-width: 2.9;
+  --steam-dx: -8px;
+  --steam-peak: 0.65;
+  animation-duration: 9s;
+  animation-delay: -4.5s;
+}
+
+.bowl-steam__wisp--c {
+  stroke-width: 3.2;
+  --steam-dx: 5px;
+  --steam-peak: 0.72;
+  animation-duration: 8.2s;
+  animation-delay: -7s;
+}
+
+/* Starts and ends at opacity 0 at the same pose family -> seamless loop */
+@keyframes bowl-steam-rise {
+  0% {
+    opacity: 0;
+    transform: translate(0, 14px) scale(0.9, 0.7);
+  }
+  20% {
+    opacity: var(--steam-peak);
+  }
+  60% {
+    opacity: calc(var(--steam-peak) * 0.7);
+    transform: translate(calc(var(--steam-dx) * 0.4), -8px) scale(1, 1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(var(--steam-dx), -34px) scale(1.12, 1.08);
+  }
+}
+
+/* Reduced motion: no movement; keep a faint static hint of warmth */
+@media (prefers-reduced-motion: reduce) {
+  .bowl-steam__wisp {
+    animation: none;
+    opacity: 0.35;
+    transform: none;
+    will-change: auto;
+  }
+}

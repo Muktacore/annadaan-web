@@ -1,3 +1,4 @@
+
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
@@ -6,105 +7,113 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-    --font-heading: var(--font-sans);
-    --font-sans: 'Nunito Sans Variable', sans-serif;
-    --color-sidebar-ring: var(--sidebar-ring);
-    --color-sidebar-border: var(--sidebar-border);
-    --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-    --color-sidebar-accent: var(--sidebar-accent);
-    --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-    --color-sidebar-primary: var(--sidebar-primary);
-    --color-sidebar-foreground: var(--sidebar-foreground);
-    --color-sidebar: var(--sidebar);
-    --color-chart-5: var(--chart-5);
-    --color-chart-4: var(--chart-4);
-    --color-chart-3: var(--chart-3);
-    --color-chart-2: var(--chart-2);
-    --color-chart-1: var(--chart-1);
-    --color-ring: var(--ring);
-    --color-input: var(--input);
-    --color-border: var(--border);
-    --color-destructive: var(--destructive);
-    --color-accent-foreground: var(--accent-foreground);
-    --color-accent: var(--accent);
-    --color-muted-foreground: var(--muted-foreground);
-    --color-muted: var(--muted);
-    --color-secondary-foreground: var(--secondary-foreground);
-    --color-secondary: var(--secondary);
-    --color-primary-foreground: var(--primary-foreground);
-    --color-primary: var(--primary);
-    --color-popover-foreground: var(--popover-foreground);
-    --color-popover: var(--popover);
-    --color-card-foreground: var(--card-foreground);
-    --color-card: var(--card);
-    --color-foreground: var(--foreground);
-    --color-background: var(--background);
-    --radius-sm: calc(var(--radius) * 0.6);
-    --radius-md: calc(var(--radius) * 0.8);
-    --radius-lg: var(--radius);
-    --radius-xl: calc(var(--radius) * 1.4);
-    --radius-2xl: calc(var(--radius) * 1.8);
-    --radius-3xl: calc(var(--radius) * 2.2);
-    --radius-4xl: calc(var(--radius) * 2.6);
-    --color-clay: var(--clay);
-    --color-clay-foreground: var(--clay-foreground);
-    --color-sage: var(--sage);
-    --color-sage-foreground: var(--sage-foreground);
-    --color-status-safe: var(--status-safe);
-    --color-status-safe-soft: var(--status-safe-soft);
-    --color-status-soon: var(--status-soon);
-    --color-status-soon-soft: var(--status-soon-soft);
-    --color-status-unsafe: var(--status-unsafe);
-    --color-status-unsafe-soft: var(--status-unsafe-soft);
+  --font-heading: var(--font-sans);
+  --font-sans: "Nunito Sans Variable", sans-serif;
+
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+
+  --color-clay: var(--clay);
+  --color-clay-foreground: var(--clay-foreground);
+  --color-sage: var(--sage);
+  --color-sage-foreground: var(--sage-foreground);
+  --color-status-safe: var(--status-safe);
+  --color-status-safe-soft: var(--status-safe-soft);
+  --color-status-soon: var(--status-soon);
+  --color-status-soon-soft: var(--status-soon-soft);
+  --color-status-unsafe: var(--status-unsafe);
+  --color-status-unsafe-soft: var(--status-unsafe-soft);
 }
 
 :root {
-    --background: #EDE9DF;
-    --foreground: #2B2A24;
-    --card: #F4F1E9;
-    --card-foreground: #2B2A24;
-    --popover: #F4F1E9;
-    --popover-foreground: #2B2A24;
-    --primary: #586C5A;
-    --primary-foreground: #F4F1E9;
-    --secondary: #D8DDCB;
-    --secondary-foreground: #3E4B3F;
-    --muted: #E4DFD2;
-    --muted-foreground: #6E6B5E;
-    --accent: #E2E0D0;
-    --accent-foreground: #2B2A24;
-    --destructive: #B3392F;
-    --border: #D9D3C3;
-    --input: #D9D3C3;
-    --ring: #81927A;
-    --chart-1: #586C5A;
-    --chart-2: #B87858;
-    --chart-3: #81927A;
-    --chart-4: #D99A2B;
-    --chart-5: #8A8672;
-    --radius: 0.625rem;
-    --sidebar: #F4F1E9;
-    --sidebar-foreground: #2B2A24;
-    --sidebar-primary: #586C5A;
-    --sidebar-primary-foreground: #F4F1E9;
-    --sidebar-accent: #E2E0D0;
-    --sidebar-accent-foreground: #2B2A24;
-    --sidebar-border: #D9D3C3;
-    --sidebar-ring: #81927A;
-    --clay: #B87858;
-    --clay-foreground: #FBF8F1;
-    --sage: #81927A;
-    --sage-foreground: #171A16;
-    --status-safe: #4F8A4B;
-    --status-safe-soft: #DCE8D5;
-    --status-soon: #C98A1E;
-    --status-soon-soft: #F3E4C3;
-    --status-unsafe: #B3392F;
-    --status-unsafe-soft: #F1D6D2;
+  --background: #EDE9DF;
+  --foreground: #2B2A24;
+  --card: #F4F1E9;
+  --card-foreground: #2B2A24;
+  --popover: #F4F1E9;
+  --popover-foreground: #2B2A24;
+  --primary: #586C5A;
+  --primary-foreground: #F4F1E9;
+  --secondary: #D8DDCB;
+  --secondary-foreground: #3E4B3F;
+  --muted: #E4DFD2;
+  --muted-foreground: #6E6B5E;
+  --accent: #E2E0D0;
+  --accent-foreground: #3E4B3F;
+  --destructive: #B3392F;
+  --border: #D9D3C3;
+  --input: #D9D3C3;
+  --ring: #81927A;
+  --chart-1: #586C5A;
+  --chart-2: #B87858;
+  --chart-3: #81927A;
+  --chart-4: #D99A2B;
+  --chart-5: #8A8672;
+  --radius: 0.625rem;
+
+  --sidebar: #F4F1E9;
+  --sidebar-foreground: #2B2A24;
+  --sidebar-primary: #586C5A;
+  --sidebar-primary-foreground: #F4F1E9;
+  --sidebar-accent: #E2E0D0;
+  --sidebar-accent-foreground: #3E4B3F;
+  --sidebar-border: #D9D3C3;
+  --sidebar-ring: #81927A;
+
+  --clay: #B87858;
+  --clay-foreground: #FBF8F1;
+  --sage: #81927A;
+  --sage-foreground: #171A16;
+
+  --status-safe: #4F8A4B;
+  --status-safe-soft: #DCE8D5;
+  --status-soon: #C98A1E;
+  --status-soon-soft: #F3E4C3;
+  --status-unsafe: #B3392F;
+  --status-unsafe-soft: #F1D6D2;
 }
 
 .dark {
-      --background: #171A16;
+  --background: #171A16;
   --foreground: #E8E4D8;
   --card: #1F231D;
   --card-foreground: #E8E4D8;
@@ -164,17 +173,597 @@
 @layer base {
   * {
     @apply border-border outline-ring/50;
-    }
+  }
+
   body {
     @apply bg-background text-foreground;
-    }
+  }
+
   html {
     @apply font-sans;
-    }
+  }
 }
 
 @theme {
   --shadow-sm: 0 1px 2px 0 rgb(88 108 90 / 0.08);
-  --shadow-md: 0 4px 10px -2px rgb(88 108 90 / 0.12), 0 2px 4px -2px rgb(88 108 90 / 0.08);
-  --shadow-lg: 0 10px 24px -6px rgb(88 108 90 / 0.16), 0 4px 8px -4px rgb(88 108 90 / 0.08);
+  --shadow-md:
+    0 4px 10px -2px rgb(88 108 90 / 0.12),
+    0 2px 4px -2px rgb(88 108 90 / 0.08);
+  --shadow-lg:
+    0 10px 24px -6px rgb(88 108 90 / 0.16),
+    0 4px 8px -4px rgb(88 108 90 / 0.08);
+}
+
+/* ==========================================
+   ANNA DAAN — LOGIN STEAM ANIMATION
+   ========================================== */
+
+.annadaan-food-scene {
+  isolation: isolate;
+}
+
+.annadaan-food-art {
+  position: relative;
+  z-index: 1;
+  display: block;
+}
+
+.annadaan-steam {
+  position: absolute;
+  z-index: 2;
+  left: 48%;
+  top: 25%;
+  width: 20%;
+  height: 27%;
+  pointer-events: none;
+  transform: translateX(-50%);
+}
+
+.annadaan-steam-wisp {
+  position: absolute;
+  bottom: 0;
+  display: block;
+  width: 10px;
+  height: 42px;
+  border: 2px solid rgb(255 249 237 / 0.72);
+  border-color:
+    rgb(255 249 237 / 0.72)
+    transparent
+    transparent
+    rgb(255 249 237 / 0.48);
+  border-radius: 50%;
+  filter: drop-shadow(0 0 3px rgb(255 249 237 / 0.16));
+  opacity: 0;
+  transform: translate3d(0, 8px, 0) rotate(8deg) scale(0.78);
+  animation: annadaan-steam-rise 3.2s ease-in-out infinite;
+  will-change: transform, opacity;
+}
+
+.annadaan-steam-wisp--one {
+  left: 23%;
+  animation-delay: 0s;
+}
+
+.annadaan-steam-wisp--two {
+  left: 48%;
+  height: 50px;
+  animation-delay: 1.05s;
+  animation-duration: 3.5s;
+}
+
+.annadaan-steam-wisp--three {
+  left: 72%;
+  height: 36px;
+  animation-delay: 2.05s;
+  animation-duration: 3s;
+}
+
+@keyframes annadaan-steam-rise {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 9px, 0) rotate(8deg) scale(0.78);
+  }
+
+  18% {
+    opacity: 0.68;
+  }
+
+  55% {
+    opacity: 0.46;
+    transform: translate3d(5px, -18px, 0) rotate(-9deg) scale(1);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate3d(-4px, -43px, 0) rotate(10deg) scale(1.12);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .annadaan-steam-wisp {
+    animation: none;
+    display: none;
+  }
+}
+
+
+/* ==========================================
+   ANNA DAAN — LIVING DASHBOARD
+   ========================================== */
+
+.home-dashboard {
+  position: relative;
+  isolation: isolate;
+}
+
+/* Statistic cards */
+.stat-card {
+  border-color: color-mix(in srgb, var(--border) 85%, var(--primary));
+  box-shadow:
+    0 3px 8px rgb(70 75 55 / 0.035),
+    0 12px 26px rgb(70 75 55 / 0.035);
+  transition:
+    border-color 220ms ease,
+    box-shadow 220ms ease,
+    background-color 220ms ease;
+}
+
+.stat-card:hover {
+  border-color: color-mix(in srgb, var(--primary) 38%, var(--border));
+  box-shadow:
+    0 5px 12px rgb(70 75 55 / 0.07),
+    0 16px 30px rgb(70 75 55 / 0.07);
+}
+
+/* Donor call-to-action */
+.donor-banner {
+  box-shadow:
+    0 5px 14px rgb(100 65 40 / 0.08),
+    0 16px 34px rgb(100 65 40 / 0.07);
+  transition: box-shadow 250ms ease;
+}
+
+.donor-banner:hover {
+  box-shadow:
+    0 8px 20px rgb(100 65 40 / 0.12),
+    0 20px 40px rgb(100 65 40 / 0.08);
+}
+
+/* base rule trimmed: position/size live in the "Character in the donor banner" block below */
+.donor-banner__mascot {
+  height: 150px;
+  opacity: 0.68;
+}
+
+/* Empty donations state */
+.empty-donations {
+  position: relative;
+  display: flex;
+  min-height: 230px;
+  align-items: center;
+  gap: 22px;
+  overflow: hidden;
+  padding: 24px 28px;
+  border: 1px solid var(--border);
+  border-radius: 26px;
+  background:
+    radial-gradient(
+      circle at 8% 20%,
+      color-mix(in srgb, var(--sage) 16%, transparent),
+      transparent 45%
+    ),
+    linear-gradient(
+      125deg,
+      var(--card),
+      color-mix(in srgb, var(--background) 76%, var(--sage))
+    );
+  box-shadow: 0 8px 24px rgb(70 75 55 / 0.035);
+}
+
+/* Small screens */
+@media (max-width: 767px) {
+  .donor-banner__mascot {
+    right: -15px;
+    bottom: -22px;
+    width: 105px;
+    height: 105px;
+    opacity: 0.32;
+  }
+
+    .empty-donations {
+    min-height: 0;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 20px;
+  }
+
+}
+
+/* Dark theme adjustments */
+.dark .stat-card {
+  box-shadow: 0 8px 22px rgb(0 0 0 / 0.12);
+}
+
+.dark .empty-donations {
+  background:
+    radial-gradient(
+      circle at 8% 20%,
+      rgb(135 156 123 / 0.12),
+      transparent 48%
+    ),
+    var(--card);
+}
+
+/* Respect the user's motion preference */
+@media (prefers-reduced-motion: reduce) {
+  .stat-card,
+  .donor-banner {
+    transition: none;
+  }
+}
+
+/* ==========================================
+   ANNA DAAN — FOOD BOX CHARACTER
+   ========================================== */
+
+.food-box-mascot {
+  position: relative;
+  display: grid;
+  width: 180px;
+  height: 180px;
+  flex: 0 0 auto;
+  place-items: center;
+  overflow: visible;
+  transform-origin: center bottom;
+  isolation: isolate;
+  will-change: transform;
+}
+
+.food-box-mascot svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+/* Keep the character comfortable on smaller screens */
+@media (max-width: 767px) {
+  .food-box-mascot {
+    width: 142px;
+    height: 142px;
+  }
+}
+
+/* Avoid continuous animation when the user prefers reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .food-box-mascot {
+    will-change: auto;
+  }
+}
+/* ==========================================
+   ANNA DAAN — REFERENCE-MATCHING SIDEBAR
+   ========================================== */
+
+.annadaan-sidebar {
+  isolation: isolate;
+  border-color: var(--sidebar-border);
+}
+
+.annadaan-sidebar__brand,
+.annadaan-sidebar__donate,
+.annadaan-sidebar nav,
+.annadaan-sidebar__account {
+  position: relative;
+  z-index: 1;
+}
+
+.annadaan-sidebar nav a {
+  min-height: 44px;
+  border-radius: 18px;
+}
+
+.annadaan-sidebar nav a[aria-current="page"] {
+  font-weight: 700;
+}
+
+.annadaan-sidebar__donate {
+  min-height: 46px;
+}
+
+.annadaan-sidebar__account {
+  border-color: var(--sidebar-border);
+}
+
+.annadaan-sidebar__botanical {
+  display: flex;
+  flex-direction: column;
+  transform: rotate(-12deg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .annadaan-sidebar nav a,
+  .annadaan-sidebar__donate {
+    transition: none;
+  }
+}
+
+@media (max-height: 560px) {
+  .annadaan-sidebar {
+    overflow-y: auto;
+  }
+
+  .annadaan-sidebar__account {
+    margin-top: 12px;
+  }
+}
+
+/* ==========================================
+   ANNA DAAN — ANIMATED FOOD BOX CHARACTERS
+   ========================================== */
+
+.food-box-character {
+  position: relative;
+  display: grid;
+  width: 170px;
+  aspect-ratio: 1 / 1;
+  flex: 0 0 auto;
+  place-items: center;
+  overflow: visible;
+  transform-origin: center bottom;
+  pointer-events: none;
+}
+
+.food-box-character__image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+/* Character in the donor banner */
+.donor-banner__mascot {
+  position: absolute;
+  z-index: 1;
+  right: 10px;
+  bottom: -8px;
+  width: clamp(115px, 32%, 180px);
+  aspect-ratio: 1 / 1;
+  pointer-events: none;
+}
+
+.donor-banner__mascot .food-box-character {
+  width: 100%;
+}
+
+/* Keep the banner text clear of the character */
+.donor-banner > div:first-child {
+  position: relative;
+  z-index: 2;
+}
+
+@media (max-width: 767px) {
+  .donor-banner__mascot {
+    right: -5px;
+    bottom: -5px;
+    width: 112px;
+    opacity: 0.9;
+  }
+
+  .donor-banner > div:first-child {
+    max-width: 78%;
+  }
+
+  .empty-donations .food-box-character {
+    width: 140px;
+    align-self: center;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .food-box-character,
+  .food-box-character__image {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* ==========================================
+   ANNA DAAN — MOTION FOUNDATION (Model 1)
+   Shared utilities used by every page.
+   ========================================== */
+
+@layer base {
+  /* Capacitor / mobile: no grey tap flash, no 300ms tap delay */
+  html {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  a,
+  button,
+  [role="button"],
+  label,
+  summary {
+    touch-action: manipulation;
+  }
+}
+
+/* Loading skeleton: soft sweep of light across a muted block */
+.skeleton {
+  position: relative;
+  overflow: hidden;
+  background: var(--muted);
+}
+
+.skeleton::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    color-mix(in srgb, var(--foreground) 7%, transparent),
+    transparent
+  );
+  animation: skeleton-shimmer 1.4s ease-in-out infinite;
+}
+
+@keyframes skeleton-shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* Gentle attention pulse for a single element (e.g. a "new" dot) */
+@keyframes soft-pulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50%      { transform: scale(1.35); opacity: 0.55; }
+}
+
+.soft-pulse {
+  animation: soft-pulse 2s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton::after,
+  .soft-pulse {
+    animation: none;
+  }
+}
+
+/* A quieter, more legible neighborhood-table surface system. */
+:root {
+  --background: #eeeade;
+  --foreground: #28352c;
+  --card: #f8f6ef;
+  --card-foreground: #28352c;
+  --popover: #f8f6ef;
+  --popover-foreground: #28352c;
+  --primary: #42634d;
+  --primary-foreground: #f8f6ef;
+  --secondary: #e0e7d8;
+  --secondary-foreground: #354c3b;
+  --muted: #e7e3d8;
+  --muted-foreground: #626c61;
+  --accent: #e2e8dc;
+  --accent-foreground: #354c3b;
+  --border: #d7d6c8;
+  --input: #d7d6c8;
+  --ring: #718b70;
+  --sidebar: #f6f4ec;
+  --sidebar-foreground: #28352c;
+  --sidebar-primary: #42634d;
+  --sidebar-primary-foreground: #f8f6ef;
+  --sidebar-accent: #e2e8dc;
+  --sidebar-accent-foreground: #354c3b;
+  --sidebar-border: #deded1;
+  --sidebar-ring: #718b70;
+  --clay: #a96649;
+  --clay-foreground: #fff9f1;
+}
+
+.dark {
+  --background: #1a211c;
+  --foreground: #e9e9dc;
+  --card: #222b24;
+  --card-foreground: #e9e9dc;
+  --popover: #222b24;
+  --popover-foreground: #e9e9dc;
+  --primary: #91a98c;
+  --primary-foreground: #1a211c;
+  --secondary: #2d392f;
+  --secondary-foreground: #d8e2d3;
+  --muted: #29322b;
+  --muted-foreground: #b0b8aa;
+  --accent: #303b32;
+  --accent-foreground: #e9e9dc;
+  --border: #38443a;
+  --input: #38443a;
+  --ring: #91a98c;
+  --sidebar: #202922;
+  --sidebar-foreground: #e9e9dc;
+  --sidebar-primary: #91a98c;
+  --sidebar-primary-foreground: #1a211c;
+  --sidebar-accent: #303b32;
+  --sidebar-accent-foreground: #e9e9dc;
+  --sidebar-border: #38443a;
+  --sidebar-ring: #91a98c;
+  --clay: #b8795d;
+  --clay-foreground: #211711;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  min-height: 100dvh;
+  background-image: radial-gradient(
+    circle at 1px 1px,
+    color-mix(in srgb, var(--foreground) 2.3%, transparent) 0.7px,
+    transparent 0.9px
+  );
+  background-size: 13px 13px;
+}
+
+button,
+a,
+input,
+textarea,
+[role="button"] {
+  -webkit-tap-highlight-color: transparent;
+}
+
+:where(button, a, input, textarea, select, [tabindex]):focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--ring) 55%, transparent);
+  outline-offset: 3px;
+}
+
+.stat-card,
+.donor-banner,
+.annadaan-sidebar nav a,
+.annadaan-sidebar__donate {
+  transition-duration: 160ms;
+}
+
+.empty-donations {
+  border-radius: 1.5rem;
+  background: color-mix(in srgb, var(--card) 88%, var(--sage));
+  box-shadow: none;
+}
+
+.donor-banner {
+  box-shadow: 0 8px 20px rgb(82 52 37 / 0.11);
+}
+
+.stat-card {
+  border-color: color-mix(in srgb, var(--border) 78%, var(--primary));
+  box-shadow: 0 4px 14px rgb(43 52 41 / 0.045);
+}
+
+.dark body {
+  background-image: radial-gradient(
+    circle at 1px 1px,
+    rgb(240 239 222 / 2.2%) 0.7px,
+    transparent 0.9px
+  );
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
