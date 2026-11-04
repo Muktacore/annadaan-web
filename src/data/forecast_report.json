@@ -1,0 +1,253 @@
+{
+  "disclaimer": "SIMULATED data. Architecture validated on synthetic donations; these numbers are NOT real-world accuracy (no real donation history exists yet).",
+  "seed": 42,
+  "rows_raw": 3288,
+  "rows_features": 3204,
+  "split": {
+    "train": [
+      "2023-01-29",
+      "2025-02-13"
+    ],
+    "val": [
+      "2025-02-14",
+      "2025-07-23"
+    ],
+    "test": [
+      "2025-07-24",
+      "2025-12-31"
+    ]
+  },
+  "metrics": {
+    "naive_yesterday": {
+      "val": {
+        "mae": 5.848,
+        "rmse": 7.572,
+        "smape": 26.85
+      },
+      "test": {
+        "mae": 6.031,
+        "rmse": 7.913,
+        "smape": 26.04
+      }
+    },
+    "naive_last_week": {
+      "val": {
+        "mae": 5.848,
+        "rmse": 7.48,
+        "smape": 27.02
+      },
+      "test": {
+        "mae": 6.072,
+        "rmse": 8.149,
+        "smape": 26.03
+      }
+    },
+    "random_forest": {
+      "val": {
+        "mae": 4.167,
+        "rmse": 5.255,
+        "smape": 19.4
+      },
+      "test": {
+        "mae": 4.074,
+        "rmse": 5.43,
+        "smape": 18.02
+      }
+    },
+    "xgboost": {
+      "val": {
+        "mae": 4.428,
+        "rmse": 5.707,
+        "smape": 20.5
+      },
+      "test": {
+        "mae": 4.063,
+        "rmse": 5.451,
+        "smape": 18.07
+      }
+    },
+    "lstm": {
+      "val": {
+        "mae": 4.336,
+        "rmse": 5.49,
+        "smape": 20.13
+      },
+      "test": {
+        "mae": 4.283,
+        "rmse": 5.668,
+        "smape": 18.7
+      }
+    }
+  },
+  "best_ml_model_by_val_mae": "random_forest",
+  "verdict": "random_forest beats naive_yesterday on test MAE by 32.4%",
+  "lstm": "trained",
+  "shap_top_features": {
+    "random_forest": [
+      {
+        "feature": "roll_mean_28",
+        "mean_abs_shap": 3.067
+      },
+      {
+        "feature": "zone_Vasai",
+        "mean_abs_shap": 1.657
+      },
+      {
+        "feature": "is_festival",
+        "mean_abs_shap": 1.097
+      },
+      {
+        "feature": "dow",
+        "mean_abs_shap": 1.0
+      },
+      {
+        "feature": "is_weekend",
+        "mean_abs_shap": 0.924
+      },
+      {
+        "feature": "roll_std_7",
+        "mean_abs_shap": 0.229
+      }
+    ],
+    "xgboost": [
+      {
+        "feature": "roll_mean_28",
+        "mean_abs_shap": 2.785
+      },
+      {
+        "feature": "zone_Vasai",
+        "mean_abs_shap": 1.978
+      },
+      {
+        "feature": "dow",
+        "mean_abs_shap": 1.684
+      },
+      {
+        "feature": "is_festival",
+        "mean_abs_shap": 0.995
+      },
+      {
+        "feature": "roll_mean_7",
+        "mean_abs_shap": 0.957
+      },
+      {
+        "feature": "zone_Nalasopara",
+        "mean_abs_shap": 0.672
+      }
+    ]
+  },
+  "meals_per_donation": 22.81,
+  "forecast_7day": {
+    "Nalasopara": [
+      {
+        "date": "2026-01-01",
+        "donations": 14.7,
+        "meals": 335
+      },
+      {
+        "date": "2026-01-02",
+        "donations": 14.5,
+        "meals": 330
+      },
+      {
+        "date": "2026-01-03",
+        "donations": 20.1,
+        "meals": 457
+      },
+      {
+        "date": "2026-01-04",
+        "donations": 20.4,
+        "meals": 466
+      },
+      {
+        "date": "2026-01-05",
+        "donations": 16.7,
+        "meals": 381
+      },
+      {
+        "date": "2026-01-06",
+        "donations": 16.1,
+        "meals": 367
+      },
+      {
+        "date": "2026-01-07",
+        "donations": 13.9,
+        "meals": 317
+      }
+    ],
+    "Vasai": [
+      {
+        "date": "2026-01-01",
+        "donations": 26.3,
+        "meals": 601
+      },
+      {
+        "date": "2026-01-02",
+        "donations": 29.1,
+        "meals": 663
+      },
+      {
+        "date": "2026-01-03",
+        "donations": 34.4,
+        "meals": 785
+      },
+      {
+        "date": "2026-01-04",
+        "donations": 34.4,
+        "meals": 783
+      },
+      {
+        "date": "2026-01-05",
+        "donations": 26.3,
+        "meals": 601
+      },
+      {
+        "date": "2026-01-06",
+        "donations": 27.3,
+        "meals": 622
+      },
+      {
+        "date": "2026-01-07",
+        "donations": 28.5,
+        "meals": 650
+      }
+    ],
+    "Virar": [
+      {
+        "date": "2026-01-01",
+        "donations": 18.5,
+        "meals": 421
+      },
+      {
+        "date": "2026-01-02",
+        "donations": 19.1,
+        "meals": 435
+      },
+      {
+        "date": "2026-01-03",
+        "donations": 24.1,
+        "meals": 550
+      },
+      {
+        "date": "2026-01-04",
+        "donations": 23.7,
+        "meals": 540
+      },
+      {
+        "date": "2026-01-05",
+        "donations": 20.4,
+        "meals": 465
+      },
+      {
+        "date": "2026-01-06",
+        "donations": 21.1,
+        "meals": 481
+      },
+      {
+        "date": "2026-01-07",
+        "donations": 20.2,
+        "meals": 460
+      }
+    ]
+  }
+}
